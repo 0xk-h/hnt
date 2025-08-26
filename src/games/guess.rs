@@ -19,12 +19,19 @@ fn print_banner() {
 pub fn guess(number: i32) {
     let secret = rand::random_range(1..=10);
 
-    println!("You guessed the number: {}", number);
     println!("The secret number is: {}", secret);
+
+    let replies = [
+        "✨ Big brain energy! You're unstopppable! ✨",
+        "🔥 Poggers! Nailed it in one go!",
+        "😎 Absolute legend move! Respect!",
+    ];
     if number == secret {
         println!("You win!🎉");
+        let reply = replies[rand::random_range(0..replies.len())];
+        println!("{}", reply);
     } else {
-        println!("You lose!");
+        println!("❌ You lose! Better luck next time.");
     }
 }
 
