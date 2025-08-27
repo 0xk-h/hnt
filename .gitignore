@@ -37,6 +37,7 @@ Thumbs.db
 
 # Precompiled binaries (local builds)
 releases/
+release/
 
 # Added by cargo
 
