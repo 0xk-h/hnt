@@ -5,7 +5,12 @@ mod utils;
 
 fn main() {
     #[derive(Parser)]
-    #[command(author, version, about)]
+    #[command(
+        name = "hnt",
+        author = "Kishore Kumar",
+        version = "0.2.0",
+        about = "Dev productivity cli tool"
+    )]
     struct Cli {
         #[command(subcommand)]
         command: Commands,
