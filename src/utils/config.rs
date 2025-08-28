@@ -4,7 +4,7 @@ use std::path::PathBuf;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct HntConfig {
-    ai_api_key: String,
+    pub ai_api_key: String,
 }
 
 impl HntConfig {
