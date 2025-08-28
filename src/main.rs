@@ -70,9 +70,13 @@ async fn main() {
                 if full {
                     println!("{}", serde_json::to_string_pretty(&res).unwrap());
                 } else {
-                    let output = res["candidates"][0]["content"]["parts"][0]["text"]
-                        .as_str()
-                        .unwrap_or("⚠️ No output found");
+                    let output = if let Some(text) = res["candidates"][0]["content"]["parts"][0]["text"].as_str() {
+                        text
+                    } else if let Some(err) = res["error"]["message"].as_str() {
+                        err
+                    } else {
+                        "⚠️ No output found"
+                    };
 
                     println!("{}", output);
 
