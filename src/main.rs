@@ -4,8 +4,10 @@ mod utils;
 mod ai;
 
 use clap::{Parser, Subcommand};
+use tokio;
 
-fn main() {
+#[tokio::main]
+async fn main() {
 
     // let cfg = utils::config::HntConfig::load();
     #[derive(Parser)]
@@ -33,10 +35,14 @@ fn main() {
         },
         // AI commands
         Ai {
-            #[arg(short,long)]
+            #[arg(short,long, group = "ai")]
             key: Option<String>,
 
+            #[arg(group = "ai")]
             prompt: Option<String>,
+
+            #[arg(short, long,requires = "prompt", default_value_t = false)]
+            full: bool,
         }
     }
 
@@ -49,11 +55,28 @@ fn main() {
         Commands::Push { input } => {
             git::push::push(&input);
         }
-        Commands::Ai { key, prompt } => {
+        Commands::Ai { key, prompt, full } => {
             if let Some(new_key) = key {
                 ai::update_api_key::key(&new_key);
-            } else if let Some(_p) = prompt {
-                println!("AI Prompt feature coming soon! Stay tuned. 🚀");
+            } else if let Some(p) = prompt {
+                let res = match ai::call_ai::ai(&p).await {
+                    Ok(json) => json,
+                    Err(err) => {
+                        eprintln!("Error calling AI: {}", err);
+                        return;
+                    }
+                };
+
+                if full {
+                    println!("{}", serde_json::to_string_pretty(&res).unwrap());
+                } else {
+                    let output = res["candidates"][0]["content"]["parts"][0]["text"]
+                        .as_str()
+                        .unwrap_or("⚠️ No output found");
+
+                    println!("{}", output);
+
+                }
             } else {
                 println!("⚠️ Please provide either an AI key with --key or a prompt.");
             }
