@@ -2,11 +2,11 @@
 set -e
 
 TARGETS=(
-    "x86_64-unknown-linux-gnu:hnt-linux-x86_64"             #done
-    "aarch64-unknown-linux-gnu:hnt-linux-arm64"             #done
-    "x86_64-apple-darwin:hnt-darwin-x86_64"
-    "aarch64-apple-darwin:hnt-darwin-arm64"
-    "x86_64-pc-windows-gnu:hnt-windows-x86_64.exe"          #done
+    "x86_64-unknown-linux-gnu:hnt-linux-x86_64"
+    "aarch64-unknown-linux-gnu:hnt-linux-arm64"
+    # "x86_64-apple-darwin:hnt-darwin-x86_64"
+    # "aarch64-apple-darwin:hnt-darwin-arm64"
+    "x86_64-pc-windows-gnu:hnt-windows-x86_64.exe"
 )
 
 mkdir -p releases

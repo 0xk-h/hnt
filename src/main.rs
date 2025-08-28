@@ -1,9 +1,13 @@
-use clap::{Parser, Subcommand};
 mod games;
 mod git;
 mod utils;
+mod ai;
+
+use clap::{Parser, Subcommand};
 
 fn main() {
+
+    // let cfg = utils::config::HntConfig::load();
     #[derive(Parser)]
     #[command(
         name = "hnt",
@@ -27,6 +31,13 @@ fn main() {
             #[arg(trailing_var_arg = true)]
             input : Vec<String>,
         },
+        // AI commands
+        Ai {
+            #[arg(short,long)]
+            key: Option<String>,
+
+            prompt: Option<String>,
+        }
     }
 
     let cli = Cli::parse();
@@ -37,6 +48,15 @@ fn main() {
         }
         Commands::Push { input } => {
             git::push::push(&input);
+        }
+        Commands::Ai { key, prompt } => {
+            if let Some(new_key) = key {
+                ai::update_api_key::key(&new_key);
+            } else if let Some(_p) = prompt {
+                println!("AI Prompt feature coming soon! Stay tuned. 🚀");
+            } else {
+                println!("⚠️ Please provide either an AI key with --key or a prompt.");
+            }
         }
         //_ => println!("Command not recognized. Please enter a valid command"),
     }
