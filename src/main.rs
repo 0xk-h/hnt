@@ -66,7 +66,7 @@ async fn main() {
                 eprintln!("Error: -u requires exactly 2 arguments: <msg> <branch>");
                 return;
             }
-            git::push::push(&input, set_upstream, ai, dry_run);
+            git::push::push(&input, set_upstream, ai, dry_run).await;
         }
         Commands::Ai { key, prompt, full } => {
             if let Some(new_key) = key {

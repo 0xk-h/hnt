@@ -1,6 +1,52 @@
+use std::process::Command;
+use crate::ai::call_ai;
 
-pub fn commit_msg(dry_run: bool) -> String {
-    println!("Enter commit message:{}", dry_run);
-    return String::from("AI generated commit message");
+pub async fn commit_msg() -> Option<String> {
+
+    let output = Command::new("git")
+        .args(["diff", "--cached"])
+        .output()
+        .expect("❌ Failed to run git diff --cached");
+
+    if !output.status.success() {
+        eprintln!("❌ git diff --cached failed");
+        return None;
+    }
+
+    let diff = String::from_utf8_lossy(&output.stdout);
+
+    let prompt = format!(
+        "You are an assistant that generates conventional commit messages.\n\
+         Based on the following git diff, suggest at most 5 possible commit messages.\n\
+         \n\
+         Return ONLY a valid JSON array of strings.\n\
+         Do not include code fences, do not escape the strings, do not add any explanation.\n\
+         \n\
+         Example of the required format:\n\
+         [\"feat: add login button\", \"fix: correct typo in README\"]\n\
+         \n\
+         Git diff:\n{}",
+        diff
+    );
+
+    let res = match call_ai::ai(&prompt).await {
+        Ok(json) => json,
+        Err(err) => {
+            eprintln!("Error calling AI: {}", err);
+            return None;
+        }
+    };
+
+    let output = if let Some(text) = res["candidates"][0]["content"]["parts"][0]["text"].as_str() {
+        text
+    } else if let Some(err) = res["error"]["message"].as_str() {
+        eprintln!("AI Error: {}", err);
+        return None;
+    } else {
+        eprintln!("⚠️ No output found for commit msg");
+        return None;
+    };
+
+    Some(output.to_string())
 }
 
