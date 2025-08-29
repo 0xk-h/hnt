@@ -1,6 +1,6 @@
 use std::process::{Command, Stdio};
 
-pub fn push(inputs: &[String]) {
+pub fn push(inputs: &[String], set_upstream: bool) {
     match inputs {
         [] => {
             println!("No arguments provided for git.");
@@ -13,7 +13,11 @@ pub fn push(inputs: &[String]) {
         [msg, branch] => {
             run_git(&["add", "."]);
             run_git(&["commit", "-m", &msg]);
-            run_git(&["push", "origin", &branch]);
+            if set_upstream {
+                run_git(&["push", "--set-upstream", "origin", "HEAD"]);
+            } else {
+                run_git(&["push", "origin", &branch]);
+            }
         }
         _ => {
             eprintln!("Too many arguments: {:?}", inputs);

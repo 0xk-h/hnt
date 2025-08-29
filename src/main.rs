@@ -30,6 +30,9 @@ async fn main() {
         },
         // git commands
         Push {
+            #[arg(short = 'u', long = "set-upstream", default_value_t = false)]
+            set_upstream: bool,
+
             #[arg(trailing_var_arg = true)]
             input : Vec<String>,
         },
@@ -52,8 +55,8 @@ async fn main() {
         Commands::Guess { number } => {
             games::guess_parser::parse_guess(number);
         }
-        Commands::Push { input } => {
-            git::push::push(&input);
+        Commands::Push { input, set_upstream } => {
+            git::push::push(&input, set_upstream);
         }
         Commands::Ai { key, prompt, full } => {
             if let Some(new_key) = key {
