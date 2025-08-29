@@ -1,6 +1,16 @@
+use crate::ai::commit::commit_msg;
 use std::process::{Command, Stdio};
 
-pub fn push(inputs: &[String], set_upstream: bool) {
+pub fn push(inputs: &[String], set_upstream: bool, ai: bool, dry_run: bool) {
+
+    if ai {
+        let msg = commit_msg(dry_run);
+        if dry_run {
+            return;
+        } else {
+            println!("AI generated commit message: {}", msg);
+        }
+    }
     match inputs {
         [] => {
             println!("No arguments provided for git.");

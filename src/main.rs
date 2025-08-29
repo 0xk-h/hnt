@@ -33,6 +33,12 @@ async fn main() {
             #[arg(short = 'u', long = "set-upstream", default_value_t = false)]
             set_upstream: bool,
 
+            #[arg(short = 'A', long, default_value_t = false)]
+            ai: bool,
+
+            #[arg(short = 'n', long = "dry-run", default_value_t = false)]
+            dry_run: bool,
+
             #[arg(trailing_var_arg = true)]
             input : Vec<String>,
         },
@@ -55,12 +61,12 @@ async fn main() {
         Commands::Guess { number } => {
             games::guess_parser::parse_guess(number);
         }
-        Commands::Push { input, set_upstream } => {
+        Commands::Push { input, set_upstream, ai, dry_run } => {
             if set_upstream && input.len() != 2 {
                 eprintln!("Error: -u requires exactly 2 arguments: <msg> <branch>");
                 return;
             }
-            git::push::push(&input, set_upstream);
+            git::push::push(&input, set_upstream, ai, dry_run);
         }
         Commands::Ai { key, prompt, full } => {
             if let Some(new_key) = key {
@@ -73,7 +79,6 @@ async fn main() {
                         return;
                     }
                 };
-
                 if full {
                     println!("{}", serde_json::to_string_pretty(&res).unwrap());
                 } else {
