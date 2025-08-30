@@ -20,7 +20,7 @@ pub async fn push(inputs: &[String], set_upstream: bool, ai: bool, dry_run: bool
                     return;
                 }
             };
-            commits.push(String::from("Other"));
+            commits.push(String::from("Custom"));
 
             let choice = Select::new("Pick a commit message:", commits.clone())
                 .prompt()
@@ -34,7 +34,7 @@ pub async fn push(inputs: &[String], set_upstream: bool, ai: bool, dry_run: bool
                 }
             }
 
-            let final_choice = if choice == "Other" {
+            let final_choice = if choice == "Custom" {
                 Text::new("Enter your custom commit message:")
                     .prompt()
                     .unwrap()

@@ -74,8 +74,8 @@ async fn main() {
             } else if let Some(p) = prompt {
                 let res = match ai::call_ai::ai(&p).await {
                     Ok(json) => json,
-                    Err(err) => {
-                        eprintln!("Error calling AI: {}", err);
+                    Err(_err) => {
+                        eprintln!("Error could not reach AI service. Check your internet connection and try again");
                         return;
                     }
                 };
