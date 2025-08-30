@@ -13,6 +13,11 @@ pub async fn commit_msg() -> Option<String> {
         return None;
     }
 
+    if output.stdout.is_empty() {
+    eprintln!("No changes detected. Modify files before running this command.");
+    return None;
+    }
+
     let diff = String::from_utf8_lossy(&output.stdout);
 
     let prompt = format!(
