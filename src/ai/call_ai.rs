@@ -1,8 +1,9 @@
 use reqwest::Client;
 use serde_json::json;
 use crate::utils::config::HntConfig;
+use crate::utils::loader::Loader;
 
-pub async fn ai(prompt: &str) -> Result<serde_json::Value, Box<dyn std::error::Error>> {
+async fn call(prompt: &str) -> Result<serde_json::Value, Box<dyn std::error::Error>> {
     let payload = json!({
         "contents": [
             { "parts": [{ "text": prompt }] }
@@ -21,4 +22,19 @@ pub async fn ai(prompt: &str) -> Result<serde_json::Value, Box<dyn std::error::E
 
     let result: serde_json::Value = response.json().await?;
     Ok(result)
+}
+
+
+pub async fn ai(prompt: &str) -> Result<serde_json::Value, Box<dyn std::error::Error>> {
+    let loader = Loader::start();
+
+    let res = match call(prompt).await {
+        Ok(result) => result,
+        Err(e) => {
+            loader.stop();
+            return Err(e);
+        }
+    };
+    loader.stop();
+    Ok(res)
 }

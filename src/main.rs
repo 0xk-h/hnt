@@ -52,7 +52,7 @@ async fn main() {
 
             #[arg(short, long,requires = "prompt", default_value_t = false)]
             full: bool,
-        }
+        },
     }
 
     let cli = Cli::parse();
