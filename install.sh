@@ -28,11 +28,13 @@ fi
 #-------------------------------------------------
 # installing the binary
 #-------------------------------------------------
-BINARY_NAME="hnt-${OS}-Hello"
+BINARY_NAME="hnt-${OS}-${ARCH}"
 
 URL="https://github.com/kishore399/hnt/releases/latest/download/$BINARY_NAME"
 
 HTTP_STATUS=$(curl -o /dev/null --silent --head --write-out "%{http_code}" --location "$URL")
+
+echo "Downloading $BINARY_NAME from $URL ..."
 
 if [ "$HTTP_STATUS" -ne 200 ]; then
     echo "❌ The binary for your OS/architecture is not published yet."
@@ -41,7 +43,6 @@ if [ "$HTTP_STATUS" -ne 200 ]; then
     exit 1
 fi
 
-echo "Downloading $BINARY_NAME from $URL ..."
 curl -L "$URL" -o /tmp/hnt
 
 #-------------------------------------------------
