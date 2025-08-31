@@ -63,14 +63,15 @@ pub fn start() {
                 }
                 if num == secret {
                     guess += 1;
-                    println!("🎉 Correct! The secret number was {}. guessed in {} attempts", num, guess);
+                    println!("🎉 Correct! The secret number was {}.", num);
 
                     let reply = match guess {
                         1 => "🌿 First try? Go touch some grass, dude!",
-                        2..=3 => "😏 Decent… still smells like beginner's luck tho.",
-                        4..=5 => "🤡 Took you long enough, clown.",
-                        6..=7 => "💀 Took 6-7 tries? Loser! Even a snail would be faster!",
-                        _ => "😂 What's so hard? Even a toddler could do better!",
+                        2..=3 => "😏 Not bad… you're getting the hang of it!",
+                        4 => "😎 Decent… not bad for a rookie, ngl.",
+                        5 => "🤔 Average vibes… did someone hit the slow-mo button?",
+                        6..=7 => "😵 Bruh… did you forget this was a game or nah?",
+                        _ => "😂 Iconic struggle… even a snail was judging your pace!",
                     };
                     println!("✅ You guessed in {} attempt(s)!", guess);
                     println!("{}", reply);

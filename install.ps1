@@ -20,7 +20,7 @@ if (-not (Test-Path $BIN_PATH)) {
 #-------------------------------------------------
 # Download the binary
 #-------------------------------------------------
-$BINARY_NAME = "hnt-windows-Hello.exe"
+$BINARY_NAME = "hnt-windows-${ARCH}.exe"
 $URL = "https://github.com/kishore399/hnt/releases/latest/download/$BINARY_NAME"
 $TEMP_FILE = "$Env:TEMP\hnt.exe"
 
@@ -39,13 +39,18 @@ try {
 #-------------------------------------------------
 Move-Item -Path $TEMP_FILE -Destination "$BIN_PATH\hnt.exe" -Force
 
-Write-Host "✅ Installation complete! Run 'hnt guess' to verify."
-Write-Host "Installed at: $BIN_PATH\hnt.exe"
-
-# Adding $BIN_PATH to user PATH
+#-------------------------------------------------
+# Add $BIN_PATH to user PATH
+#-------------------------------------------------
 $PATH_ENTRY = [Environment]::GetEnvironmentVariable("Path", "User")
 if ($PATH_ENTRY -notlike "*$BIN_PATH*") {
     [Environment]::SetEnvironmentVariable("Path", "$PATH_ENTRY;$BIN_PATH", "User")
-    Write-Host "Added $BIN_PATH to user PATH. Restart PowerShell to use 'hnt' globally."
 }
-for this
+
+#-------------------------------------------------
+# Update PATH for current session immediately
+#-------------------------------------------------
+$Env:Path += ";$BIN_PATH"
+
+Write-Host "✅ Installation complete! Run 'hnt guess' to verify."
+Write-Host "Installed at: $BIN_PATH\hnt.exe"
