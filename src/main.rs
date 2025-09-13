@@ -2,6 +2,7 @@ mod games;
 mod git;
 mod utils;
 mod ai;
+mod init;
 
 use clap::{Parser, Subcommand};
 use tokio;
@@ -53,6 +54,13 @@ async fn main() {
             #[arg(short, long,requires = "prompt", default_value_t = false)]
             full: bool,
         },
+        //scaffold new project
+        Init {
+            #[arg(short, long, default_value_t = false)]
+            yes: bool,
+
+            project_name: Option<String>,
+        }
     }
 
     let cli = Cli::parse();
@@ -95,6 +103,14 @@ async fn main() {
                 }
             } else {
                 println!("⚠️ Please provide either an AI key with --key or a prompt.");
+            }
+        }
+        Commands::Init { yes, project_name }    => {
+            init::scaffold::scaffold_project();
+            if yes || project_name.as_deref().unwrap() == "." {
+                println!("Yes");
+            } else {
+                println!("No");
             }
         }
         //_ => println!("Command not recognized. Please enter a valid command"),
