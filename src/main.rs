@@ -106,12 +106,7 @@ async fn main() {
             }
         }
         Commands::Init { yes, project_name }    => {
-            init::scaffold::scaffold_project();
-            if yes || project_name.as_deref().unwrap() == "." {
-                println!("Yes");
-            } else {
-                println!("No");
-            }
+            init::scaffold::scaffold_project(yes, project_name);
         }
         //_ => println!("Command not recognized. Please enter a valid command"),
     }

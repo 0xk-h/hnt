@@ -1,50 +1,38 @@
-use crate::init::prompts::ProjectConfig;
+use crate::init::prompts::{ProjectConfig, get_project_config};
+use crate::init::project_summary::print_project_summary;
+use std::env;
 
-pub fn scaffold_project() {
-    // Get project configuration from prompts
-    let config: ProjectConfig = crate::init::prompts::get_project_config();
+pub fn scaffold_project(yes: bool , project_name: Option<String>) {
 
-println!("✅ Project configuration:");
-println!("Project name: {}", config.name);
-println!("Project type: {}", config.project_type);
+    let config: ProjectConfig = match project_name {
+        Some(name) => {
+            let name = name.trim();
+            if name.is_empty() {
+                println!("Project name cannot be empty.");
+                return;
+            } else if name == "." {
+                // Use current dir name
+                let current_dir = env::current_dir()
+                    .expect("Failed to get current directory");
+                let project_name = current_dir
+                    .file_name()
+                    .expect("Failed to get directory name")
+                    .to_string_lossy()
+                    .to_string();
+                get_project_config(Some(project_name))
+            } else {
+                get_project_config(Some(name.to_string()))
+            }
+        }
+        None => {
+            get_project_config(None)
+        }
+    };
 
-// Frontend
-if let Some(ref fe) = config.frontend {
-    println!("Frontend framework: {}", fe);
-}
+    if yes {
+        println!("Skipping prompts and using default configuration.");
+    }
 
-// Backend
-if let Some(ref be) = config.backend {
-    println!("Backend framework: {}", be);
-}
-
-// Language
-if let Some(ref lang) = config.language {
-    println!("Language: {}", lang);
-}
-
-// TypeScript / Tailwind
-println!("Use TypeScript: {}", config.use_typescript);
-println!("Use Tailwind: {}", config.use_tailwind);
-
-// Database
-if let Some(ref db) = config.database {
-    println!("Database: {}", db);
-}
-
-// Git
-println!("Initialize Git repo: {}", config.git_init);
-
-// UI Library
-if config.use_shadcn {
-    println!("UI component library: shadcn/ui");
-} else {
-    println!("UI component library: None");
-}
-
-println!("\nNext steps:");
-println!("1. cd {}", config.name);
-println!("2. Install dependencies (npm/pip/cargo/go depending on project)");
-println!("3. Start building your project!");
+    print_project_summary(&config);
 
 }
