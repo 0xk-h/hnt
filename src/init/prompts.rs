@@ -13,7 +13,7 @@ pub struct ProjectConfig {
     pub use_shadcn: bool,
 }
 
-pub fn get_project_config(name:Option<String>) -> ProjectConfig {
+pub fn get_project_config(name:Option<String>, yes:bool) -> ProjectConfig {
     // 1. Project name
     let name = match name {
         Some(n) => n,
@@ -66,11 +66,15 @@ pub fn get_project_config(name:Option<String>) -> ProjectConfig {
             Some(String::from("Rust"))
         } else {
             // Express.js
-            let use_ts = Confirm::new("Use TypeScript for Express backend?")
-                .with_default(false)
-                .prompt()
-                .unwrap_or(false);
-            Some(if use_ts { String::from("TypeScript") } else { String::from("JavaScript") })
+            if yes {
+                Some(String::from("JavaScript"))
+            } else {
+                let use_ts = Confirm::new("Use TypeScript for Express backend?")
+                    .with_default(false)
+                    .prompt()
+                    .unwrap_or(false);
+                Some(if use_ts { String::from("TypeScript") } else { String::from("JavaScript") })
+            }
         }
     } else {
         None
@@ -78,7 +82,7 @@ pub fn get_project_config(name:Option<String>) -> ProjectConfig {
 
     // 6. TypeScript (only for frontend/fullstack)
     let use_typescript = if let Some(ref ln) = frontend {
-        if ln == "Vanilla" || ln == "Svelte" {
+        if ln == "Vanilla" || ln == "Svelte" || yes {
             false
         } else {
             Confirm::new("Use TypeScript for frontend?")
@@ -91,7 +95,9 @@ pub fn get_project_config(name:Option<String>) -> ProjectConfig {
     };
 
     // 6. TailwindCSS (only for frontend/fullstack)
-    let use_tailwind = if frontend.is_some() {
+    let use_tailwind = if yes {
+        true
+    } else if frontend.is_some() {
         Confirm::new("Use Tailwind CSS?")
             .with_default(true)
             .prompt()
@@ -101,13 +107,19 @@ pub fn get_project_config(name:Option<String>) -> ProjectConfig {
     };
 
     // 8. Git init
-    let git_init = Confirm::new("Initialize a new git repository?")
-        .with_default(true)
-        .prompt()
-        .unwrap_or(true);
+    let git_init = if yes {
+        true
+    } else {
+        Confirm::new("Initialize a new git repository?")
+            .with_default(true)
+            .prompt()
+            .unwrap_or(true)
+    };
 
     // 9. shadcnUI  (only for React/Next + Tailwind)
-    let use_shadcn = if let Some(ref ln) = frontend {
+    let use_shadcn = if yes {
+        true
+    } else if let Some(ref ln) = frontend {
         if (ln == "React" || ln == "Next.js") && use_tailwind {
             Confirm::new("Add shadcn/ui component library?")
                 .with_default(false)
