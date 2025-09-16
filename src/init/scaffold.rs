@@ -4,7 +4,7 @@ use std::env;
 
 use crate::init::prompts::{ProjectConfig, get_project_config};
 use crate::init::project_summary::print_project_summary;
-// use crate::init::fs_ops;
+use crate::init::create;
 
 pub fn scaffold_project(yes: bool , project_name: Option<String>) {
 
@@ -44,5 +44,6 @@ pub fn scaffold_project(yes: bool , project_name: Option<String>) {
         println!("{}","Project initialization terminated.".red().bold());
         return;
     }
+    let _ = create::check();
 
 }
