@@ -18,6 +18,11 @@ pub fn scaffold_project(yes: bool , project_name: Option<String>) {
                 // Use current dir name
                 let path = env::current_dir()
                     .expect("Failed to get current directory");
+
+                if !create::check(&path) {
+                    return;
+                }
+
                 let project_name = path
                     .file_name()
                     .expect("Failed to get directory name")
@@ -44,6 +49,5 @@ pub fn scaffold_project(yes: bool , project_name: Option<String>) {
         println!("{}","Project initialization terminated.".red().bold());
         return;
     }
-    let _ = create::check();
 
 }
