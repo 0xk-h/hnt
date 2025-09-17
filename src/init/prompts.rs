@@ -40,6 +40,7 @@ pub fn get_project_config(name:Option<String>, yes:bool) -> ProjectConfig {
         let frontends = vec![
             ("React", "React", ""),
             ("Next.js", "Next.js", ""),
+            ("Vanilla", "Vanilla", "HTML + CSS + JS"),
             ("Vue.js", "Vue.js", ""),
             ("Svelte", "Svelte", "")
         ];
