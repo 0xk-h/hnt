@@ -1,4 +1,4 @@
-use inquire::{Text, Select, Confirm};
+use cliclack::{ input, confirm, select };
 
 #[derive(Debug)]
 pub struct ProjectConfig {
@@ -17,27 +17,38 @@ pub fn get_project_config(name:Option<String>, yes:bool) -> ProjectConfig {
     // 1. Project name
     let name = match name {
         Some(n) => n,
-        None => Text::new("Enter project name:")
-            .with_placeholder("my-awesome-project")
-            .prompt()
-            .unwrap_or_else(|_| String::from("Project007")),
+        None => input("Enter project name:")
+            .placeholder("my-project")
+            .interact()
+            .unwrap_or_else(|_| String::from("my-project")),
     };
 
     // 2. Project type
-    let project_types = vec!["Frontend", "Backend", "Fullstack"];
-    let project_type = Select::new("Choose project type:", project_types)
-        .prompt()
+    let project_types = vec![
+        ("Frontend", "Frontend", ""),
+        ("Backend", "Backend", ""),
+        ("Fullstack", "Fullstack", "")
+    ];
+    let project_type = select("Choose project type:")
+        .items(&project_types)
+        .interact()
         .unwrap()
         .to_string();
 
     // 3. Frontend
     let frontend = if project_type == "Frontend" || project_type == "Fullstack" {
-        let frontends = vec!["Vanilla", "React", "Next.js", "Svelte"];
+        let frontends = vec![
+            ("React", "React", ""),
+            ("Next.js", "Next.js", ""),
+            ("Vue.js", "Vue.js", ""),
+            ("Svelte", "Svelte", "")
+        ];
         Some(
-            Select::new("Choose frontend framework:", frontends)
-                .prompt()
+            select("Choose frontend framework:")
+                .items(&frontends)
+                .interact()
                 .unwrap()
-                .to_string(),
+                .to_string()
         )
     } else {
         None
@@ -45,12 +56,18 @@ pub fn get_project_config(name:Option<String>, yes:bool) -> ProjectConfig {
 
     // 4. Backend
     let backend = if project_type == "Backend" || project_type == "Fullstack" {
-        let backends = vec!["Node.js (Express.js)", "Python (FastAPI)", "Go (Gin)", "Rust (Axum)"];
+        let backends = vec![
+            ("Node.js (Express.js)", "Express.js", "Node.js"),
+            ("Python (FastAPI)", "FastAPI", "Python"),
+            ("Go (Gin)", "Gin", "Golang"),
+            ("Rust (Axum)", "Axum", "Rust")
+        ];
         Some(
-            Select::new("Choose backend framework:", backends)
-                .prompt()
+            select("Choose backend framework:")
+                .items(&backends)
+                .interact()
                 .unwrap()
-                .to_string(),
+                .to_string()
         )
     } else {
         None
@@ -69,9 +86,9 @@ pub fn get_project_config(name:Option<String>, yes:bool) -> ProjectConfig {
             if yes {
                 Some(String::from("JavaScript"))
             } else {
-                let use_ts = Confirm::new("Use TypeScript for Express backend?")
-                    .with_default(false)
-                    .prompt()
+                let use_ts = confirm("Use TypeScript for Express backend?")
+                    .initial_value(false)
+                    .interact()
                     .unwrap_or(false);
                 Some(if use_ts { String::from("TypeScript") } else { String::from("JavaScript") })
             }
@@ -82,25 +99,25 @@ pub fn get_project_config(name:Option<String>, yes:bool) -> ProjectConfig {
 
     // 6. TypeScript (only for frontend/fullstack)
     let use_typescript = if let Some(ref ln) = frontend {
-        if ln == "Vanilla" || ln == "Svelte" || yes {
+        if ln == "Svelte" || yes {
             false
         } else {
-            Confirm::new("Use TypeScript for frontend?")
-                .with_default(false)
-                .prompt()
+            confirm("Use TypeScript for frontend?")
+                .initial_value(false)
+                .interact()
                 .unwrap_or(false)
         }
     } else {
         false
     };
 
-    // 6. TailwindCSS (only for frontend/fullstack)
+    // 7. TailwindCSS (only for frontend/fullstack)
     let use_tailwind = if yes {
         true
     } else if frontend.is_some() {
-        Confirm::new("Use Tailwind CSS?")
-            .with_default(true)
-            .prompt()
+        confirm("Use TailwindCSS?")
+            .initial_value(true)
+            .interact()
             .unwrap_or(true)
     } else {
         false
@@ -110,9 +127,9 @@ pub fn get_project_config(name:Option<String>, yes:bool) -> ProjectConfig {
     let git_init = if yes {
         true
     } else {
-        Confirm::new("Initialize a new git repository?")
-            .with_default(true)
-            .prompt()
+        confirm("Initialize a Git repository?")
+            .initial_value(true)
+            .interact()
             .unwrap_or(true)
     };
 
@@ -121,10 +138,10 @@ pub fn get_project_config(name:Option<String>, yes:bool) -> ProjectConfig {
         true
     } else if let Some(ref ln) = frontend {
         if (ln == "React" || ln == "Next.js") && use_tailwind {
-            Confirm::new("Add shadcn/ui component library?")
-                .with_default(false)
-                .prompt()
-                .unwrap_or(false)
+            confirm("Use shadcn/ui component library?")
+                .initial_value(true)
+                .interact()
+                .unwrap_or(true)
         } else {
             false
         }

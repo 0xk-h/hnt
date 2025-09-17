@@ -1,5 +1,6 @@
 use crate::init::prompts::ProjectConfig;
 
+// Only for debugging
 pub fn print_project_summary(config: &ProjectConfig) {
 
     println!("\n✅ Project configuration:");
@@ -37,8 +38,12 @@ pub fn print_project_summary(config: &ProjectConfig) {
         println!("  UI component library: None");
     }
 
+}
+
+pub fn print_next_steps(name: &str) {
     println!("\nNext steps:");
-    println!("1. cd {}", config.name);
+    println!("1. cd {}", name);
     println!("2. Install dependencies (npm/pip/cargo/go depending on project)");
     println!("3. Start building your project!");
+    println!();
 }

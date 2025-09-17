@@ -1,4 +1,4 @@
-use cliclack::{intro, outro, select};
+use cliclack::{ outro, select};
 use colored::*;
 use std::fs;
 use std::path::Path;
@@ -8,9 +8,6 @@ pub fn check(path: &Path) -> bool {
     if is_empty(path) {
         return true;
     }
-
-    println!();
-    let _ = intro("HNT Wizard".bold());
 
         let ans = select("Current directory is not empty. Please choose how to proceed:")
             .item(0, "Cancel operation", "")
