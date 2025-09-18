@@ -3,14 +3,13 @@ use serde_json::json;
 use crate::utils::config::HntConfig;
 use crate::utils::loader::Loader;
 
-async fn call(prompt: &str) -> Result<serde_json::Value, Box<dyn std::error::Error>> {
+async fn call(prompt: &str, api_key: &str) -> Result<serde_json::Value, Box<dyn std::error::Error>> {
     let payload = json!({
         "contents": [
             { "parts": [{ "text": prompt }] }
         ]
     });
 
-    let api_key = HntConfig::load().api.gemini_api_key;
     let client = Client::new();
     let response = client
         .post("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent")
@@ -26,9 +25,14 @@ async fn call(prompt: &str) -> Result<serde_json::Value, Box<dyn std::error::Err
 
 
 pub async fn ai(prompt: &str) -> Result<serde_json::Value, Box<dyn std::error::Error>> {
+
+    let api_key = HntConfig::load().api.gemini_api_key;
+    if api_key.is_empty() {
+        return Err("No API key found".into());
+    }
     let loader = Loader::start();
 
-    let res = match call(prompt).await {
+    let res = match call(prompt, &api_key).await {
         Ok(result) => result,
         Err(e) => {
             loader.stop();

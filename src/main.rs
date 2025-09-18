@@ -82,8 +82,13 @@ async fn main() {
             } else if let Some(p) = prompt {
                 let res = match ai::call_ai::ai(&p).await {
                     Ok(json) => json,
-                    Err(_err) => {
-                        eprintln!("Error could not reach AI service. Check your internet connection and try again");
+                    Err(err) => {
+                        let err = err.to_string();
+                        if err == "No API key found" {
+                            eprintln!("⚠️  No API key found. Please set it using `hnt ai --key <YOUR_API_KEY>`");
+                        } else {
+                            eprintln!("Error could not reach AI service. Check your internet connection and try again");
+                        }
                         return;
                     }
                 };
