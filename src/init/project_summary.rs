@@ -17,14 +17,6 @@ pub fn print_project_summary(config: &ProjectConfig) {
         println!("  Backend framework: {}", ln);
     }
 
-    // Language
-    if let Some(ref ln) = config.language {
-        println!("  Backend language: {}", ln);
-    }
-
-    // TypeScript
-    println!("  Use TypeScript for frontend: {}", config.use_typescript);
-
     // Tailwind
     println!("  Use Tailwind: {}", config.use_tailwind);
 

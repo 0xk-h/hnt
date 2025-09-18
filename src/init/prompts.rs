@@ -6,8 +6,6 @@ pub struct ProjectConfig {
     pub project_type: String,
     pub frontend: Option<String>,
     pub backend: Option<String>,
-    pub language: Option<String>,
-    pub use_typescript: bool,
     pub use_tailwind: bool,
     pub git_init: bool,
     pub use_shadcn: bool,
@@ -38,11 +36,11 @@ pub fn get_project_config(name:Option<String>, yes:bool) -> ProjectConfig {
     // 3. Frontend
     let frontend = if project_type == "Frontend" || project_type == "Fullstack" {
         let frontends = vec![
-            ("React", "React", ""),
-            ("Next.js", "Next.js", ""),
-            ("Vanilla", "Vanilla", "HTML + CSS + JS"),
-            ("Vue.js", "Vue.js", ""),
-            ("Svelte", "Svelte", "")
+            ("react", "React", ""),
+            ("next.js", "Next.js", ""),
+            ("vanilla", "Vanilla", "HTML + CSS + JS"),
+            ("vue.js", "Vue.js", ""),
+            ("svelte", "Svelte", "")
         ];
         Some(
             select("Choose frontend framework:")
@@ -74,24 +72,23 @@ pub fn get_project_config(name:Option<String>, yes:bool) -> ProjectConfig {
         None
     };
 
-    // 5. Language (only for backend/fullstack)
-    let language = if let Some(ref ln) = backend {
+    let backend = if let Some(ref ln) = backend {
         if ln.contains("FastAPI") {
-            Some(String::from("FastAPI"))
+            Some(String::from("fastapi"))
         } else if ln.contains("Gin") {
-            Some(String::from("Go"))
+            Some(String::from("gin"))
         } else if ln.contains("Axum") {
-            Some(String::from("Rust"))
+            Some(String::from("axum"))
         } else {
             // Express.js
             if yes {
-                Some(String::from("JavaScript"))
+                Some(String::from("express"))
             } else {
                 let use_ts = confirm("Use TypeScript for Express backend?")
                     .initial_value(false)
                     .interact()
                     .unwrap_or(false);
-                Some(if use_ts { String::from("TypeScript") } else { String::from("JavaScript") })
+                Some(if use_ts { String::from("express-ts") } else { String::from("express") })
             }
         }
     } else {
@@ -99,17 +96,18 @@ pub fn get_project_config(name:Option<String>, yes:bool) -> ProjectConfig {
     };
 
     // 6. TypeScript (only for frontend/fullstack)
-    let use_typescript = if let Some(ref ln) = frontend {
+    let frontend = if let Some(ref ln) = frontend {
         if ln == "Svelte" || yes {
-            false
+            Some(ln.to_string())
         } else {
-            confirm("Use TypeScript for frontend?")
+            let use_ts = confirm("Use TypeScript for frontend?")
                 .initial_value(false)
                 .interact()
-                .unwrap_or(false)
+                .unwrap_or(false);
+            Some(if use_ts { format!("{}-ts", ln) } else { ln.to_string() })
         }
     } else {
-        false
+        None
     };
 
     // 7. TailwindCSS (only for frontend/fullstack)
@@ -155,8 +153,6 @@ pub fn get_project_config(name:Option<String>, yes:bool) -> ProjectConfig {
         project_type,
         frontend,
         backend,
-        language,
-        use_typescript,
         use_tailwind,
         git_init,
         use_shadcn,
