@@ -4,7 +4,24 @@ use std::path::PathBuf;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct HntConfig {
-    pub ai_api_key: String,
+    pub api: ApiConfig,
+    pub init_defaults: InitDefaults,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct ApiConfig {
+    pub gemini_api_key: String,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct InitDefaults {
+    pub frontend: String,
+    pub backend: String,
+    pub frontend_lang: String,
+    pub backend_lang: String,
+    pub use_tailwind: bool,
+    pub git_init: bool,
+    pub use_shadcn: bool,
 }
 
 impl HntConfig {
@@ -15,7 +32,18 @@ impl HntConfig {
         if !path.exists() {
             // Default HntConfig
             let cfg = HntConfig {
-                ai_api_key: String::from(""),
+                api: ApiConfig {
+                    gemini_api_key: String::from(""),
+                },
+                init_defaults: InitDefaults {
+                    frontend: String::from("React"),
+                    backend: String::from("Express.js"),
+                    frontend_lang: String::from("JavaScript"),
+                    backend_lang: String::from("JavaScript"),
+                    use_tailwind: true,
+                    git_init: true,
+                    use_shadcn: false,
+                },
             };
             cfg.save();
             return cfg;
@@ -36,7 +64,7 @@ impl HntConfig {
     // Update AI api key
     pub fn update_ai_key(new_key: &str) {
         let mut cfg = HntConfig::load();
-        cfg.ai_api_key = new_key.to_string();
+        cfg.api.gemini_api_key = new_key.to_string();
         cfg.save();
     }
 

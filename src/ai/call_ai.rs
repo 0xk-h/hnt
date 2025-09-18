@@ -10,7 +10,7 @@ async fn call(prompt: &str) -> Result<serde_json::Value, Box<dyn std::error::Err
         ]
     });
 
-    let api_key = HntConfig::load().ai_api_key;
+    let api_key = HntConfig::load().api.gemini_api_key;
     let client = Client::new();
     let response = client
         .post("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent")
