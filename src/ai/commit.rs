@@ -36,8 +36,8 @@ pub async fn commit_msg() -> Option<String> {
 
     let res = match call_ai::ai(&prompt).await {
         Ok(json) => json,
-        Err(err) => {
-            eprintln!("Error calling AI: {}", err);
+        Err(_err) => {
+            eprintln!("Error could not reach AI service. Check yur internet connection and try again");
             return None;
         }
     };

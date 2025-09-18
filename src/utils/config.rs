@@ -17,8 +17,6 @@ pub struct ApiConfig {
 pub struct InitDefaults {
     pub frontend: String,
     pub backend: String,
-    pub frontend_lang: String,
-    pub backend_lang: String,
     pub use_tailwind: bool,
     pub git_init: bool,
     pub use_shadcn: bool,
@@ -38,8 +36,6 @@ impl HntConfig {
                 init_defaults: InitDefaults {
                     frontend: String::from("React"),
                     backend: String::from("Express.js"),
-                    frontend_lang: String::from("JavaScript"),
-                    backend_lang: String::from("JavaScript"),
                     use_tailwind: true,
                     git_init: true,
                     use_shadcn: false,
