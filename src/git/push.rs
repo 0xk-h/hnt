@@ -1,11 +1,11 @@
 use crate::ai::commit::commit_msg;
 use std::process::{Command, Stdio};
-use inquire::{Select, Text};
+use cliclack::{ select, input };
 use colored::*;
 
 pub async fn push(inputs: &[String], set_upstream: bool, ai: bool, dry_run: bool) {
     if dry_run {
-        println!("Dry run mode enabled.");
+        println!("{}","Dry run mode enabled.".bold().cyan());
     }
 
     run_git(&["add", "."]);
@@ -14,7 +14,7 @@ pub async fn push(inputs: &[String], set_upstream: bool, ai: bool, dry_run: bool
         let generated:Option<String> = commit_msg().await;
         if let Some(msg) = &generated {
             let mut commits: Vec<String> = match serde_json::from_str(&msg) {
-                Ok(c) => c,
+                Ok( c) => c,
                 Err(err) => {
                     eprintln!("Failed to parse JSON: {}", err);
                     return;
@@ -22,22 +22,33 @@ pub async fn push(inputs: &[String], set_upstream: bool, ai: bool, dry_run: bool
             };
             commits.push(String::from("Custom"));
 
-            let choice = Select::new("Pick a commit message:", commits.clone())
-                .prompt()
+            let items: Vec<(String, &str, &str)> = commits
+                .iter()
+                .map(|c| (c.clone(), c.as_str(), ""))
+                .collect();
+
+            let choice = select("Pick a commit message:")
+                .items(&items)
+                .interact()
                 .unwrap();
 
-            for commit in &commits {
-                if commit == &choice {
-                    println!("  {}",commit.blue());
-                } else {
-                    println!("  {}", commit);
+            if choice == "Custom" {
+                for commit in &commits {
+                    if commit == &choice {
+                        println!("{}  {} {}", "│".dimmed(), "●".green(), commit);
+                    } else {
+                        println!("{}  {} {}", "│".dimmed(), "○".dimmed(), commit.dimmed());
+                    }
                 }
             }
 
             let final_choice = if choice == "Custom" {
-                Text::new("Enter your custom commit message:")
-                    .prompt()
-                    .unwrap()
+                input("Enter your custom commit message:")
+                    .interact()
+                    .unwrap_or_else(|err|{
+                        eprintln!("{}",format!("Failed to read input {}",err).red());
+                        std::process::exit(1);
+                    })
             } else {
                 choice
             };
@@ -54,7 +65,7 @@ pub async fn push(inputs: &[String], set_upstream: bool, ai: bool, dry_run: bool
             inputs[0].clone()
         }
     };
-    println!("✅ Using commit message => {}", &msg);
+    println!("{}",format!("Using commit message => \"{}\"", &msg).bold().green());
 
     if dry_run {
         return;
