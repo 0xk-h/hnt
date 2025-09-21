@@ -39,7 +39,6 @@ pub fn get_project_config(name:Option<String>, yes:bool) -> ProjectConfig {
             ("react", "React", ""),
             ("next.js", "Next.js", ""),
             ("vanilla", "Vanilla", "HTML + CSS + JS"),
-            ("vue.js", "Vue.js", ""),
             ("svelte", "Svelte", "")
         ];
         Some(

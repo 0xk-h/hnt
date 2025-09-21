@@ -51,16 +51,12 @@ async fn main() {
             #[arg(group = "ai")]
             prompt: Option<String>,
 
-            #[arg(short, long,requires = "prompt", default_value_t = false)]
+            #[arg(short, long, requires = "prompt", default_value_t = false)]
             full: bool,
         },
-        //scaffold new project
-        Init {
-            #[arg(short, long, default_value_t = false)]
-            yes: bool,
 
-            project_name: Option<String>,
-        }
+        //scaffold new project
+        Init(init::validate::InitArgs),
     }
 
     let cli = Cli::parse();
@@ -110,8 +106,8 @@ async fn main() {
                 println!("⚠️ Please provide either an AI key with --key or a prompt.");
             }
         }
-        Commands::Init { yes, project_name }    => {
-            init::scaffold::scaffold_project(yes, project_name);
+        Commands::Init(init_args)    => {
+            init::validate::validate(&init_args);
         }
         //_ => println!("Command not recognized. Please enter a valid command"),
     }
