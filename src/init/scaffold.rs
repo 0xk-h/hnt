@@ -1,4 +1,4 @@
-use cliclack::{intro, outro, confirm};
+use cliclack::{ intro };
 use colored::*;
 use std::env;
 
@@ -41,18 +41,6 @@ pub fn scaffold_project(yes: bool , project_name: Option<String>) {
     };
 
     print_project_summary(&config);
-
-    let res = confirm("Do you want to proceed with this configuaration?")
-        .initial_value(true)
-        .interact()
-        .unwrap_or(false);   
-
-    if !res {
-        let _ = outro("Project initialization terminated".red());
-        return;
-    }
-
-    let _ = outro("Scaffolding project...".green());
 
     print_next_steps(&config.name);
 

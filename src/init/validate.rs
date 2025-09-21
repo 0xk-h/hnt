@@ -3,16 +3,13 @@ use crate::init;
 
 #[derive(Debug, Parser)]
 pub struct InitArgs {
-    #[arg(short, long, default_value_t = false)]
+    #[arg(short, long, default_value_t = false, group = "mode_group")]
     yes: bool,
 
-    #[arg(short, long, default_value_t = false)]
+    #[arg(short, long, default_value_t = false, group = "mode_group")]
     quick: bool,
 
     project_name: Option<String>,
-
-    #[arg(trailing_var_arg = true)]
-    frameworks: Vec<String>,
 
     #[arg( long )]
     frontend: Option<FrontendLang>,
@@ -20,23 +17,28 @@ pub struct InitArgs {
     #[arg( long )]
     backend: Option<BackendLang>,
 
-    #[arg( long, default_value_t = true, action = clap::ArgAction::SetTrue )]
-    #[arg( long = "no-tailwind", action = clap::ArgAction::SetFalse )]
+    #[arg( long = "tailwind", default_value_t = true, group = "tailwind_group")]
     tailwind: bool,
+    #[arg( long = "no-tailwind", group = "tailwind_group")]
+    no_tailwind: bool,               // correct behaviour
 
-    #[arg( long, default_value_t = false, action = clap::ArgAction::SetTrue )]
-    #[arg( long = "no-git", action = clap::ArgAction::SetFalse )]
-    git: bool,
+    #[arg( long = "git", group = "git_group" )]
+    git: bool,                       // correct behaviour    
+    #[arg( long = "no-git", group = "git_group" )]
+    no_git: bool,
 
-    #[arg( long, default_value_t = false, action = clap::ArgAction::SetTrue )]
-    #[arg( long = "no-shadcn", action = clap::ArgAction::SetFalse )]
+    #[arg( long = "shadcn", group = "shadcn_group" )]
     shadcn: bool,
+    #[arg( long = "no-shadcn", group = "shadcn_group" )]
+    no_shadcn: bool,
 
-    #[arg( long, default_value_t = false )]
+    #[arg( short, long )]
     force: bool,
 
-    #[arg( long = "skip-install", default_value_t = false )]
+    #[arg( long = "skip-install", default_value_t = true, group = "skip_install_group" )]
     skip_install: bool,
+    #[arg( long = "no-skip-install", group = "skip_install_group" )]
+    no_skip_install: bool,
 }
 
 #[derive(Clone, Debug, ValueEnum)]
@@ -64,6 +66,7 @@ enum BackendLang {
 
 pub fn validate(args: &InitArgs) {
     println!("From validate function");
+    println!("git: {}, no_git: {}", args.git, args.no_git);
     println!("{:?}", args);
     init::scaffold::scaffold_project(args.yes, args.project_name.clone());
 }

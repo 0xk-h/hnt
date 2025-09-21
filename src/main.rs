@@ -10,7 +10,6 @@ use tokio;
 #[tokio::main]
 async fn main() {
 
-    // let cfg = utils::config::HntConfig::load();
     #[derive(Parser)]
     #[command(
         name = "hnt",

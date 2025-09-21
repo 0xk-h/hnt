@@ -1,4 +1,5 @@
-use cliclack::{ input, confirm, select };
+use cliclack::{ input, confirm, select, outro };
+use colored::*;
 
 #[derive(Debug)]
 pub struct ProjectConfig {
@@ -146,6 +147,8 @@ pub fn get_project_config(name:Option<String>, yes:bool) -> ProjectConfig {
     } else {
         false
     };
+
+    let _ = outro("Scaffolding project...".green());
 
     ProjectConfig {
         name,
