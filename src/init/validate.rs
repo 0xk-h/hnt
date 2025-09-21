@@ -1,5 +1,9 @@
 use clap::{ Parser, ValueEnum };
+use std::env;
+
 use crate::init;
+use crate::utils::config::HntConfig;
+use crate::init::create;
 
 #[derive(Debug, Parser)]
 pub struct InitArgs {
@@ -17,28 +21,20 @@ pub struct InitArgs {
     #[arg( long )]
     backend: Option<BackendLang>,
 
-    #[arg( long = "tailwind", default_value_t = true, group = "tailwind_group")]
+    #[arg( long )]
     tailwind: bool,
-    #[arg( long = "no-tailwind", group = "tailwind_group")]
-    no_tailwind: bool,               // correct behaviour
 
-    #[arg( long = "git", group = "git_group" )]
-    git: bool,                       // correct behaviour    
-    #[arg( long = "no-git", group = "git_group" )]
-    no_git: bool,
+    #[arg( long )]
+    git: bool,
 
-    #[arg( long = "shadcn", group = "shadcn_group" )]
+    #[arg( long )]
     shadcn: bool,
-    #[arg( long = "no-shadcn", group = "shadcn_group" )]
-    no_shadcn: bool,
 
     #[arg( short, long )]
     force: bool,
 
-    #[arg( long = "skip-install", default_value_t = true, group = "skip_install_group" )]
+    #[arg( long="skip-install",default_value_t=true, action = clap::ArgAction::Set)]
     skip_install: bool,
-    #[arg( long = "no-skip-install", group = "skip_install_group" )]
-    no_skip_install: bool,
 }
 
 #[derive(Clone, Debug, ValueEnum)]
@@ -65,8 +61,76 @@ enum BackendLang {
 
 
 pub fn validate(args: &InitArgs) {
-    println!("From validate function");
-    println!("git: {}, no_git: {}", args.git, args.no_git);
-    println!("{:?}", args);
-    init::scaffold::scaffold_project(args.yes, args.project_name.clone());
+    if args.yes {
+        let cfg = HntConfig::load();
+        if !(cfg.init_defaults.frontend.is_empty() && cfg.init_defaults.backend.is_empty()) {
+            eprintln!("Run `hnt config` first to set up defaults or use --quick to skip prompts.");
+            return;
+        }
+
+        let name: String = match args.project_name {
+            Some(ref name) if name.trim().is_empty() => {
+                eprintln!("Invalid project name provided with --yes flag.");
+                return;
+            }
+            Some(ref name) if name.trim() == "." => {
+                let path = env::current_dir()
+                    .expect("Failed to get current directory");
+
+                if !create::check(&path, Some(false)) {
+                    return;
+                }
+
+                path
+                    .file_name()
+                    .expect("Failed to get directory name")
+                    .to_string_lossy()
+                    .to_string()
+            }
+            None => {
+                eprintln!("Project name is required when using --yes flag.");
+                return;
+            }
+            _ => {
+                args.project_name.clone().unwrap()
+            }
+            
+        };
+
+
+        let cfg = to_project_config(&cfg, name);
+
+        init::scaffold::scaffold(cfg, Some(!args.skip_install));
+
+    }
+
+    if args.frontend.is_none() && args.backend.is_none() {
+        init::scaffold::wizard(args.quick , args.project_name.clone(), args.force);
+    }
+
+    // from args to project config
+
+
+}
+
+fn to_project_config(args: &HntConfig, name: String) -> init::prompts::ProjectConfig {
+
+    let frontend = Some(args.init_defaults.frontend.clone());
+    let backend = Some(args.init_defaults.backend.clone());
+
+    init::prompts::ProjectConfig {
+        name,
+        project_type: if frontend.is_some() && backend.is_some() {
+            "Fullstack".to_string()
+        } else if frontend.is_some() {
+            "Frontend".to_string()
+        } else {
+            "Backend".to_string()
+        },
+        frontend,
+        backend,
+        use_tailwind: args.init_defaults.use_tailwind,
+        git_init: args.init_defaults.git_init,
+        use_shadcn: args.init_defaults.use_shadcn,
+    }
 }

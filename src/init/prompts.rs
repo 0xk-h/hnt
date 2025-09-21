@@ -1,6 +1,4 @@
-use cliclack::{ input, confirm, select, outro };
-use colored::*;
-
+use cliclack::{ input, confirm, select };
 #[derive(Debug)]
 pub struct ProjectConfig {
     pub name: String,
@@ -12,7 +10,8 @@ pub struct ProjectConfig {
     pub use_shadcn: bool,
 }
 
-pub fn get_project_config(name:Option<String>, yes:bool) -> ProjectConfig {
+pub fn get_project_config(name:Option<String>, quick:bool) -> ProjectConfig {
+
     // 1. Project name
     let name = match name {
         Some(n) => n,
@@ -81,7 +80,7 @@ pub fn get_project_config(name:Option<String>, yes:bool) -> ProjectConfig {
             Some(String::from("axum"))
         } else {
             // Express.js
-            if yes {
+            if quick {
                 Some(String::from("express"))
             } else {
                 let use_ts = confirm("Use TypeScript for Express backend?")
@@ -97,7 +96,7 @@ pub fn get_project_config(name:Option<String>, yes:bool) -> ProjectConfig {
 
     // 6. TypeScript (only for frontend/fullstack)
     let frontend = if let Some(ref ln) = frontend {
-        if ln == "Svelte" || yes {
+        if ln == "Svelte" || quick {
             Some(ln.to_string())
         } else {
             let use_ts = confirm("Use TypeScript for frontend?")
@@ -111,7 +110,7 @@ pub fn get_project_config(name:Option<String>, yes:bool) -> ProjectConfig {
     };
 
     // 7. TailwindCSS (only for frontend/fullstack)
-    let use_tailwind = if yes {
+    let use_tailwind = if quick {
         true
     } else if frontend.is_some() {
         confirm("Use TailwindCSS?")
@@ -123,7 +122,7 @@ pub fn get_project_config(name:Option<String>, yes:bool) -> ProjectConfig {
     };
 
     // 8. Git init
-    let git_init = if yes {
+    let git_init = if quick {
         true
     } else {
         confirm("Initialize a Git repository?")
@@ -133,7 +132,7 @@ pub fn get_project_config(name:Option<String>, yes:bool) -> ProjectConfig {
     };
 
     // 9. shadcnUI  (only for React/Next + Tailwind)
-    let use_shadcn = if yes {
+    let use_shadcn = if quick {
         true
     } else if let Some(ref ln) = frontend {
         if (ln == "React" || ln == "Next.js") && use_tailwind {
@@ -147,8 +146,6 @@ pub fn get_project_config(name:Option<String>, yes:bool) -> ProjectConfig {
     } else {
         false
     };
-
-    let _ = outro("Scaffolding project...".green());
 
     ProjectConfig {
         name,

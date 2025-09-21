@@ -3,10 +3,19 @@ use colored::*;
 use std::fs;
 use std::path::Path;
 
-pub fn check(path: &Path) -> bool {
+pub fn check(path: &Path, force: Option<bool>) -> bool {
 
     if is_empty(path) {
         return true;
+    }
+
+    if force == Some(true) {
+        // do ops
+        return true;
+    }
+
+    if force == Some(false) {
+        return false;
     }
 
         let ans = select("Current directory is not empty. Please choose how to proceed:")
@@ -18,6 +27,7 @@ pub fn check(path: &Path) -> bool {
 
         match ans {
             1 => {
+                // remove all files
                 return true;
             }
             2 => {

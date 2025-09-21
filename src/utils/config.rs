@@ -21,6 +21,7 @@ pub struct InitDefaults {
     pub use_tailwind: bool,
     pub git_init: bool,
     pub use_shadcn: bool,
+    pub install_deps: bool,
 }
 
 impl HntConfig {
@@ -88,17 +89,18 @@ impl HntConfig {
     }
 
     //default HntConfig
-    fn default_config() -> Self {
+    pub fn default_config() -> Self {
         HntConfig {
             api: ApiConfig {
                 gemini_api_key: String::from(""),
             },
             init_defaults: InitDefaults {
-                frontend: String::from("react"),
-                backend: String::from("express"),
+                frontend: String::from(""),
+                backend: String::from(""),
                 use_tailwind: true,
                 git_init: true,
                 use_shadcn: false,
+                install_deps: false,
             },
         }
     }
