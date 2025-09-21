@@ -1,7 +1,8 @@
 use std::io::{self, Write};
+use colored::*;
 
 fn print_banner() {
-    println!( r#"
+    println!("{}", r#"
  (`─').─>           <─. (`─')_ (`─')      (`─')  _   (`─')  
  (OO )__      .─>      ╲( OO) )( OO).─>   ( OO).─╱<─.(OO )  
 ,──. ,'─',──.(,──.  ,──./ ,──╱ /    '._  (,──────.,──────,) 
@@ -10,10 +11,10 @@ fn print_banner() {
 │  .─.  ││  │ │ │  ╲│  │╲    │    │  │    │  .──' │  .   .' 
 │  │ │  │╲  '─'(_ .'│  │ ╲   │    │  │    │  `───.│  │╲  ╲  
 `──' `──' `─────'   `──'  `──'    `──'    `──────'`──' '──' 
-
-          🎲 Welcome to the Guessing Game! 🎲
-"#
+"#.bold().bright_purple()
     );
+    println!("{}{}", " ".repeat(12), "🎲 Welcome to the Guessing Game! 🎲".bold().bright_magenta());
+    println!();
 }
 
 pub fn guess(number: i32) {
@@ -37,13 +38,13 @@ pub fn guess(number: i32) {
 
 pub fn start() {
     print_banner();
-    println!("Guess a number between 1-10, or 'q' to quit.");
+    println!("{}", "Guess a number between 1-10, or 'q' to quit.".dimmed());
 
     let secret = rand::random_range(1..=10);
     let mut guess = 0;
 
     loop {
-        print!("Your guess: ");
+        print!("{}", "Your guess: ".bold());
         io::stdout().flush().unwrap();
 
         let mut input = String::new();
@@ -63,7 +64,7 @@ pub fn start() {
                 }
                 if num == secret {
                     guess += 1;
-                    println!("🎉 Correct! The secret number was {}.", num);
+                    println!("{}", format!("🎉 {} The secret number was {}.", "Correct!".bold(), num.to_string().bold()).green());
 
                     let reply = match guess {
                         1 => "🌿 First try? Go touch some grass, dude!",
@@ -73,21 +74,20 @@ pub fn start() {
                         6..=7 => "😵 Bruh… did you forget this was a game or nah?",
                         _ => "😂 Iconic struggle… even a snail was judging your pace!",
                     };
-                    println!("✅ You guessed in {} attempt(s)!", guess);
-                    println!("{}", reply);
-
+                    println!("{}", format!("   You guessed in {} attempts!", guess.to_string().bold()).yellow());
+                    println!("{}", reply.bold().blue());
                     break;
                 } else if num < secret {
                     guess += 1;
-                    println!("❌ Too low! Try again.");
+                    println!("{}", "Too low! Try again.".red());
                 } else {
                     guess += 1;
-                    println!("❌ Too high! Try again.");
+                    println!("{}","Too high! Try again.".red());
                 }
             }
-            Err(_) => println!("⚠️ Invalid input. Enter a number between 1-10, or 'q' to quit."),
+            Err(_) => println!("{}", "Invalid input. Enter a number between 1-10, or 'q' to quit.".bold().red()),
         }
     }
 
-    println!("Game over!");
+    println!("{}", "Game over!".bold().bright_purple());
 }
