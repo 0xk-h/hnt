@@ -1,20 +1,21 @@
 use std::process::Command;
 use crate::ai::call_ai;
+use colored::*;
 
 pub async fn commit_msg() -> Option<String> {
 
     let output = Command::new("git")
         .args(["diff", "--cached"])
         .output()
-        .expect("❌ Failed to run git diff --cached");
+        .expect("Failed to run git diff --cached");
 
     if !output.status.success() {
-        eprintln!("❌ git diff --cached failed");
+        eprintln!("{}","git diff --cached failed".red());
         return None;
     }
 
     if output.stdout.is_empty() {
-    eprintln!("No changes detected. Modify files before running this command.");
+    eprintln!("{}","No changes detected. Modify files before running this command.".yellow());
     return None;
     }
 
@@ -39,7 +40,7 @@ pub async fn commit_msg() -> Option<String> {
         Err(err) => {
             let err = err.to_string();
             if err == "No API key found" {
-                eprintln!("⚠️  No API key found. Please set it using `hnt ai --key <YOUR_API_KEY>`");
+                eprintln!("{}","No API key found. Please set it using `hnt ai --key <YOUR_API_KEY>`".bold().red());
             } else {
                 eprintln!("Error could not reach AI service. Check your internet connection and try again");
             }
@@ -53,7 +54,7 @@ pub async fn commit_msg() -> Option<String> {
         eprintln!("AI Error: {}", err);
         return None;
     } else {
-        eprintln!("⚠️ No output found for commit msg");
+        eprintln!("No output found for commit msg");
         return None;
     };
 
