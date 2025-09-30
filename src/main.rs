@@ -65,10 +65,6 @@ async fn main() {
             games::guess_parser::parse_guess(number);
         }
         Commands::Push { input, set_upstream, ai, dry_run } => {
-            if set_upstream && input.len() != 2 {
-                eprintln!("Error: -u requires exactly 2 arguments: <msg> <branch>");
-                return;
-            }
             git::push::push(&input, set_upstream, ai, dry_run).await;
         }
         Commands::Ai { key, prompt, full } => {
