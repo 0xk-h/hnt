@@ -4,7 +4,7 @@ use std::env;
 
 use crate::init::prompts::{ProjectConfig, get_project_config};
 use crate::init::project_summary::{print_project_summary, print_next_steps};
-use crate::init::create;
+use crate::init::fs_cleanup;
 
 pub fn wizard(skip: bool, project_name: Option<String>, force: bool) {
 
@@ -21,7 +21,7 @@ pub fn wizard(skip: bool, project_name: Option<String>, force: bool) {
                 let path = env::current_dir()
                     .expect("Failed to get current directory");
 
-                if !create::check(&path, if force { Some(true) } else { None }) {
+                if !fs_cleanup::check(&path, if force { Some(true) } else { None }) {
                     return;
                 }
 

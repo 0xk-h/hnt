@@ -3,7 +3,7 @@ use std::env;
 
 use crate::init;
 use crate::utils::config::HntConfig;
-use crate::init::create;
+use crate::init::fs_cleanup;
 
 #[derive(Debug, Parser)]
 pub struct InitArgs {
@@ -77,7 +77,7 @@ pub fn validate(args: &InitArgs) {
                 let path = env::current_dir()
                     .expect("Failed to get current directory");
 
-                if !create::check(&path, Some(false)) {
+                if !fs_cleanup::check(&path, Some(false)) {
                     return;
                 }
 
