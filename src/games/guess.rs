@@ -23,16 +23,16 @@ pub fn guess(number: i32) {
     println!("The secret number is: {}", secret);
 
     let replies = [
-        "✨ Big brain energy! You're unstopppable! ✨",
+        "✨ Big brain energy! You're unstopppable!",
         "🔥 Poggers! Nailed it in one go!",
         "😎 Absolute legend move! Respect!",
     ];
     if number == secret {
-        println!("You win!🎉");
+        println!("You win!");
         let reply = replies[rand::random_range(0..replies.len())];
         println!("{}", reply);
     } else {
-        println!("❌ You lose! Better luck next time.");
+        println!("You lose! Better luck next time.");
     }
 }
 
@@ -53,14 +53,14 @@ pub fn start() {
 
         let quits = ["q", "Q", "quit", "Quit", "QUIT"];
         if quits.contains(&input) {
-            println!("👋 Quitting game...");
+            println!("{}","Quitting game...".blue());
             break;
         }
 
         match input.parse::<i32>() {
             Ok(num) => {
                 if !(1..=10).contains(&num) {
-                    println!("⚠️ Please enter a number between 1 and 10, or 'q' to quit.");
+                    println!("Please enter a number between 1 and 10, or 'q' to quit.");
                 }
                 if num == secret {
                     guess += 1;

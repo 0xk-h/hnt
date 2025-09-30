@@ -59,7 +59,7 @@ pub async fn push(inputs: &[String], set_upstream: bool, ai: bool, dry_run: bool
         }
     } else {
         if inputs.is_empty() {
-            eprintln!("❌ No commit message provided. Use -A to let AI generate one.");
+            eprintln!("No commit message provided. Use -A to let AI generate one.");
             return;
         } else {
             inputs[0].clone()

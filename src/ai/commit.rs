@@ -51,7 +51,7 @@ pub async fn commit_msg() -> Option<String> {
     let output = if let Some(text) = res["candidates"][0]["content"]["parts"][0]["text"].as_str() {
         text
     } else if let Some(err) = res["error"]["message"].as_str() {
-        eprintln!("AI Error: {}", err);
+        eprintln!("{}",format!("AI Error: {}", err).bold().red());
         return None;
     } else {
         eprintln!("No output found for commit msg");

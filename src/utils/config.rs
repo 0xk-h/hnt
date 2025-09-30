@@ -41,7 +41,7 @@ impl HntConfig {
         match toml::from_str::<HntConfig>(&content) {
             Ok(cfg) => cfg,
             Err(e) => {
-                eprintln!("⚠️  Failed to parse config file: {}", e);
+                eprintln!("Failed to parse config file: {}", e);
                 eprintln!("This may be due to an old or incompatible config version.");
 
                 let reset = confirm("Do you want to reset the config to defaults? (Old config will be backed up)")
@@ -57,10 +57,10 @@ impl HntConfig {
                     // Create new config
                     let cfg = Self::default_config();
                     cfg.save();
-                    println!("✅ New default config created. Old config backed up as {:?}", backup_path);
+                    println!("New default config created. Old config backed up as {:?}", backup_path);
                     cfg
                 } else {
-                    println!("❌ Keeping the old config file as-is. Exiting.");
+                    println!("Keeping the old config file as-is. Exiting.");
                     std::process::exit(1);
                 }
             }

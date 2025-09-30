@@ -7,11 +7,11 @@ pub fn parse_guess(number: Option<String>) {
                 if (1..=10).contains(&num) {
                     guess::guess(num);
                 } else {
-                    println!("⚠️ Number out of range. Please enter a value between 1 and 10.");
+                    println!("Number out of range. Please enter a value between 1 and 10.");
                 }
             }
             Err(_) => {
-                println!("❌ Invalid input '{}'. Please enter a number between 1 and 10.", num_str);
+                println!("Invalid input '{}'. Please enter a number between 1 and 10.", num_str);
                 println!("or type 'hnt guess' to enter interactive mode.");
             }
         }
