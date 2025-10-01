@@ -108,9 +108,6 @@ pub fn validate(args: &InitArgs) {
         init::wizard::wizard(args.quick , args.project_name.clone(), args.force);
     }
 
-    // from args to project config
-
-
 }
 
 fn to_project_config(args: &HntConfig, name: String) -> init::prompts::ProjectConfig {

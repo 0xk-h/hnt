@@ -28,13 +28,17 @@ pub fn scaffold(config: ProjectConfig, install_deps: Option<bool>) {
 
     // Placeholder for future scaffold logic
     if let Some(frontend) = &config.frontend {
-        match frontend.as_str() {
+        let res = match frontend.as_str() {
             "react" | "react-ts" => {
-                let _ = templates::react::create(&config);
+                templates::react::create(&config)
             }
             _ => {
                 println!("Frontend template '{}' is not yet supported.", frontend);
+                std::process::exit(1);
             }
+        };
+        if let Err(e) = res {
+            eprintln!("Failed to scaffold frontend '{}': {}", frontend.as_str(), e);
         }
     }
 
