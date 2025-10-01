@@ -61,6 +61,8 @@ enum BackendLang {
 
 
 pub fn validate(args: &InitArgs) {
+
+    println!("validating the prompt");
     if args.yes {
         let cfg = HntConfig::load();
         if !(cfg.init_defaults.frontend.is_empty() && cfg.init_defaults.backend.is_empty()) {
@@ -99,6 +101,8 @@ pub fn validate(args: &InitArgs) {
 
 
         let cfg = to_project_config(&cfg, name);
+
+        println!("Creating project with config: {:?}", cfg);
 
         init::scaffold::scaffold(cfg, Some(!args.skip_install));
 
