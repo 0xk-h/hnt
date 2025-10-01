@@ -1,11 +1,12 @@
+use clap::{Parser, Subcommand};
+use tokio;
+
 mod games;
 mod git;
 mod utils;
 mod ai;
 mod init;
-
-use clap::{Parser, Subcommand};
-use tokio;
+mod templates;
 
 #[tokio::main]
 async fn main() {

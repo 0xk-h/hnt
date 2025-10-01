@@ -105,7 +105,7 @@ pub fn validate(args: &InitArgs) {
     }
 
     if args.frontend.is_none() && args.backend.is_none() {
-        init::scaffold::wizard(args.quick , args.project_name.clone(), args.force);
+        init::wizard::wizard(args.quick , args.project_name.clone(), args.force);
     }
 
     // from args to project config
