@@ -6,7 +6,7 @@ mod git;
 mod utils;
 mod ai;
 mod init;
-mod templates;
+mod generator;
 
 #[tokio::main]
 async fn main() {

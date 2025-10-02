@@ -3,7 +3,7 @@ use colored::*;
 
 use super::project_summary::{print_next_steps, print_project_summary};
 use super::prompts::ProjectConfig;
-use crate::templates;
+use crate::generator;
 
 pub fn scaffold(config: ProjectConfig, install_deps: Option<bool>) {
     match install_deps {
@@ -30,7 +30,7 @@ pub fn scaffold(config: ProjectConfig, install_deps: Option<bool>) {
     if let Some(frontend) = &config.frontend {
         let res = match frontend.as_str() {
             "react" | "react-ts" => {
-                templates::react::create(&config)
+                generator::react::create(&config)
             }
             _ => {
                 println!("Frontend template '{}' is not yet supported.", frontend);
