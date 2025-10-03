@@ -77,16 +77,5 @@ pub fn create(config: &ProjectConfig) -> std::io::Result<()> {
 
     fs::write(path.join("vite.config.js"), VITE_CONFIG)?;
 
-// Command::new("npm")
-//     .current_dir(&path)
-//     .args(&["install", "class-variance-authority", "tailwind-variants", "lucide-react"])
-//     .status()
-//     .expect("Failed to install shadcn deps");
-//     Command::new("npx")
-//         .current_dir(&project_path)
-//         .args(&["shadcn-ui", "init"])
-//         .status()
-//         .expect("Failed to init shadcn-ui");
-
     Ok(())
 }
