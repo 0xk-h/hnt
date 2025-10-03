@@ -28,17 +28,17 @@ function App() {
           <Card
             title="Documentation"
             description="Learn more about HNT CLI and scaffold options."
-            href="https://github.com/kishore399/hnt#readme"
+            href="https://github.com/0xk-h/hnt#readme"
           />
           <Card
             title="GitHub"
             description="View source or contribute."
-            href="https://github.com/kishore399/hnt"
+            href="https://github.com/0xk-h/hnt"
           />
           <Card
             title="Report Issues"
             description="Found a bug? Let us know."
-            href="https://github.com/kishore399/hnt/issues"
+            href="https://github.com/0xk-h/hnt/issues"
           />
         </div>
 
