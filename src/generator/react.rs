@@ -1,37 +1,12 @@
-use std::process::Command;
+// use std::process::Command;
 use std::fs;
 use std::env;
-use std::path::PathBuf;
+use std::path::{PathBuf, Path};
 
 use crate::init::prompts::ProjectConfig;
 use crate::utils::pkg_manager::detect_package_manager;
 
-const VITE_CONFIG: &str = r#"
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import tailwindcss from '@tailwindcss/vite'
-
-// https://vite.dev/config/
-export default defineConfig({
-  plugins: [react(), tailwindcss()],
-})
-"#;
-
-const DIRS: [&str; 6] = [
-    "src/assets",
-    "src/components",
-    "src/pages",
-    "src/hooks",
-    "src/store",
-    "src/utils",
-];
-
-const STYLE: &str = r#"
-/* Coming soon... */
-"#;
-
 pub fn create(config: &ProjectConfig) -> std::io::Result<()> {
-    println!(" Creating React project: {}", config.name);
     if !(detect_package_manager("npm")) {
         eprintln!("npm is not installed. Please install Node.js and npm to proceed.");
         std::process::exit(1);
@@ -44,38 +19,46 @@ pub fn create(config: &ProjectConfig) -> std::io::Result<()> {
         }
     }
 
-    // vite with template react or react-ts
-    Command::new("npm")
-        .args(&["create", "vite@latest", &config.name, "--", "--template", config.frontend.as_ref().unwrap()])
-        .status()
-        .expect("Failed to run npm create vite");
-
     let path: PathBuf = if config.name == "." {
         env::current_dir()?
     } else {
         PathBuf::from(&config.name)
     };
-
-    // install tailwindcss
-    if config.use_tailwind {
-        Command::new("npm")
-            .current_dir(&path)
-            .args(&["install", "-D", "tailwindcss", "@tailwindcss/vite"])
-            .status()
-            .expect("Failed to install Tailwind");
-
-        fs::write(path.join("index.css"), "@import \"tailwindcss\";")?;
-
-    } else {
-        fs::write(path.join("index.css"), STYLE)?;
+    if !path.exists() {
+        fs::create_dir_all(&path)?;
     }
 
+    // add logic here
     
-    for dir in DIRS {
-        fs::create_dir_all(path.join("src").join(dir))?;
+    let template_path = Path::new("../templates/react/tailwind");
+    if !template_path.exists() {
+        eprintln!("Template folder does not exist: {:?}", template_path);
+        std::process::exit(1);
     }
 
-    fs::write(path.join("vite.config.js"), VITE_CONFIG)?;
+    copy_dir_all(template_path, &path)?;
+
+    println!("Project created successfully at {:?}", path);
+
+    Ok(())
+}
+
+fn copy_dir_all(src: &Path, dst: &Path) -> std::io::Result<()> {
+    if !dst.exists() {
+        fs::create_dir_all(dst)?;
+    }
+
+    for entry in fs::read_dir(src)? {
+        let entry = entry?;
+        let path = entry.path();
+        let dest = dst.join(entry.file_name());
+
+        if path.is_dir() {
+            copy_dir_all(&path, &dest)?;
+        } else {
+            fs::copy(&path, &dest)?;
+        }
+    }
 
     Ok(())
 }
