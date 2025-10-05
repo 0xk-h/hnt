@@ -1,7 +1,11 @@
 use cliclack::{ outro, select};
 use colored::*;
-use std::fs;
+use std::io::{self, Write};
+use std::fs::{self, File};
 use std::path::Path;
+use include_dir::{Dir, include_dir};
+
+static TEMPLATES: Dir = include_dir!("$CARGO_MANIFEST_DIR/templates");
 
 pub fn check(path: &Path, force: Option<bool>) -> bool {
 
@@ -10,7 +14,7 @@ pub fn check(path: &Path, force: Option<bool>) -> bool {
     }
 
     if force == Some(true) {
-        // do ops
+        // remove
         return true;
     }
 
@@ -42,4 +46,29 @@ pub fn check(path: &Path, force: Option<bool>) -> bool {
 
 fn is_empty(dir: &Path) -> bool {
     fs::read_dir(dir).map(|mut entries| entries.next().is_none()).unwrap_or(true)
+}
+
+pub fn copy(src: &str, dest: &Path) -> io::Result<()> {
+    let dir = TEMPLATES.get_dir(src).ok_or_else(|| {
+        io::Error::new(io::ErrorKind::NotFound, format!("Directory '{}' not found", src))
+    })?;
+
+    for file in dir.files() {
+        let relative_path = file.path().strip_prefix(src).unwrap();
+        let dest_path = dest.join(relative_path);
+
+        if let Some(parent) = dest_path.parent() {
+            fs::create_dir_all(parent)?;
+        }
+
+        let mut out_file = File::create(dest_path)?;
+        out_file.write_all(file.contents())?;
+    }
+
+    for subdir in dir.dirs() {
+        let sub_dest = dest.join(subdir.path().strip_prefix(src).unwrap());
+        copy(subdir.path().to_str().unwrap(), &sub_dest)?;
+    }
+
+    Ok(())
 }

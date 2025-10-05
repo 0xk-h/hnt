@@ -1,10 +1,11 @@
 // use std::process::Command;
 use std::fs;
 use std::env;
-use std::path::{PathBuf, Path};
+use std::path::{PathBuf};
 
 use crate::init::prompts::ProjectConfig;
 use crate::utils::pkg_manager::detect_package_manager;
+use crate::init::fs_ops::copy;
 
 pub fn create(config: &ProjectConfig) -> std::io::Result<()> {
     if !(detect_package_manager("npm")) {
@@ -28,37 +29,36 @@ pub fn create(config: &ProjectConfig) -> std::io::Result<()> {
         fs::create_dir_all(&path)?;
     }
 
-    // add logic here
-    
-    let template_path = Path::new("../templates/react/tailwind");
-    if !template_path.exists() {
-        eprintln!("Template folder does not exist: {:?}", template_path);
-        std::process::exit(1);
+    let mut replacements = std::collections::HashMap::new();
+    replacements.insert("{{project_name}}", &config.name as &str);
+    if let Some(frontend) = &config.frontend {
+        replacements.insert("{{frontend}}", frontend as &str);
     }
 
-    copy_dir_all(template_path, &path)?;
+    copy("react/tailwind", &path)?;
+
 
     println!("Project created successfully at {:?}", path);
 
     Ok(())
 }
 
-fn copy_dir_all(src: &Path, dst: &Path) -> std::io::Result<()> {
-    if !dst.exists() {
-        fs::create_dir_all(dst)?;
-    }
+// fn copy_dir_all(src: &Path, dst: &Path) -> std::io::Result<()> {
+//     if !dst.exists() {
+//         fs::create_dir_all(dst)?;
+//     }
 
-    for entry in fs::read_dir(src)? {
-        let entry = entry?;
-        let path = entry.path();
-        let dest = dst.join(entry.file_name());
+//     for entry in fs::read_dir(src)? {
+//         let entry = entry?;
+//         let path = entry.path();
+//         let dest = dst.join(entry.file_name());
 
-        if path.is_dir() {
-            copy_dir_all(&path, &dest)?;
-        } else {
-            fs::copy(&path, &dest)?;
-        }
-    }
+//         if path.is_dir() {
+//             copy_dir_all(&path, &dest)?;
+//         } else {
+//             fs::copy(&path, &dest)?;
+//         }
+//     }
 
-    Ok(())
-}
+//     Ok(())
+// }

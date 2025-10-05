@@ -29,6 +29,7 @@ Cargo.lock
 Thumbs.db
 
 # Editor / IDE files
+myapp/
 .vscode/
 .idea/
 *.swp
