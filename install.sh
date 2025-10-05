@@ -51,5 +51,5 @@ curl -L "$URL" -o /tmp/hnt
 chmod +x /tmp/hnt
 sudo mv /tmp/hnt "$BIN_PATH/hnt"
 
-echo "✅ Installation complete! Run 'hnt guess' to verify."
+echo "Installation complete! Run 'hnt guess' to verify."
 echo "Installed at: $BIN_PATH/hnt"
