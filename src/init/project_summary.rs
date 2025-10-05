@@ -23,12 +23,6 @@ pub fn print_project_summary(config: &ProjectConfig) {
     // Git
     println!("  Initialize Git repo: {}", config.git_init);
 
-    // UI Library
-    if config.use_shadcn {
-        println!("  UI component library: shadcn/ui");
-    } else {
-        println!("  UI component library: None");
-    }
 
 }
 

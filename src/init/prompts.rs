@@ -1,4 +1,8 @@
 use cliclack::{ input, confirm, select };
+use std::path::Path;
+
+use super::fs_ops::check;
+
 #[derive(Debug)]
 pub struct ProjectConfig {
     pub name: String,
@@ -7,10 +11,9 @@ pub struct ProjectConfig {
     pub backend: Option<String>,
     pub use_tailwind: bool,
     pub git_init: bool,
-    pub use_shadcn: bool,
 }
 
-pub fn get_project_config(name:Option<String>, quick:bool) -> ProjectConfig {
+pub fn get_project_config(name:Option<String>, quick:bool, force:bool) -> ProjectConfig {
 
     // 1. Project name
     let name = match name {
@@ -20,6 +23,11 @@ pub fn get_project_config(name:Option<String>, quick:bool) -> ProjectConfig {
             .interact()
             .unwrap_or_else(|_| String::from("my-project")),
     };
+    let path = Path::new(&name);
+    if !check(path, if force { Some(true) } else { None }) {
+        std::process::exit(1);
+    }
+
 
     // 2. Project type
     let project_types = vec![
@@ -131,21 +139,21 @@ pub fn get_project_config(name:Option<String>, quick:bool) -> ProjectConfig {
             .unwrap_or(true)
     };
 
-    // 9. shadcnUI  (only for React/Next + Tailwind)
-    let use_shadcn = if quick {
-        true
-    } else if let Some(ref ln) = frontend {
-        if (ln == "React" || ln == "Next.js") && use_tailwind {
-            confirm("Use shadcn/ui component library?")
-                .initial_value(true)
-                .interact()
-                .unwrap_or(true)
-        } else {
-            false
-        }
-    } else {
-        false
-    };
+    // // 9. shadcnUI  (only for React/Next + Tailwind)
+    // let use_shadcn = if quick {
+    //     true
+    // } else if let Some(ref ln) = frontend {
+    //     if (ln == "React" || ln == "Next.js") && use_tailwind {
+    //         confirm("Use shadcn/ui component library?")
+    //             .initial_value(true)
+    //             .interact()
+    //             .unwrap_or(true)
+    //     } else {
+    //         false
+    //     }
+    // } else {
+    //     false
+    // };
 
     ProjectConfig {
         name,
@@ -154,6 +162,5 @@ pub fn get_project_config(name:Option<String>, quick:bool) -> ProjectConfig {
         backend,
         use_tailwind,
         git_init,
-        use_shadcn,
     }
 }

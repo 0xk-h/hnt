@@ -16,12 +16,10 @@ pub struct ApiConfig {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct InitDefaults {
-    pub frontend: String,
-    pub backend: String,
+    pub frontend: Option<String>,
+    pub backend: Option<String>,
     pub use_tailwind: bool,
     pub git_init: bool,
-    pub use_shadcn: bool,
-    pub install_deps: bool,
 }
 
 impl HntConfig {
@@ -95,12 +93,10 @@ impl HntConfig {
                 gemini_api_key: String::from(""),
             },
             init_defaults: InitDefaults {
-                frontend: String::from(""),
-                backend: String::from(""),
+                frontend: None,
+                backend: None,
                 use_tailwind: true,
                 git_init: true,
-                use_shadcn: false,
-                install_deps: false,
             },
         }
     }

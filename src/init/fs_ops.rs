@@ -9,7 +9,7 @@ static TEMPLATES: Dir = include_dir!("$CARGO_MANIFEST_DIR/templates");
 
 pub fn check(path: &Path, force: Option<bool>) -> bool {
 
-    if is_empty(path) {
+    if !path.exists() || is_empty(path) {
         return true;
     }
 
@@ -19,6 +19,7 @@ pub fn check(path: &Path, force: Option<bool>) -> bool {
     }
 
     if force == Some(false) {
+        eprintln!("{}","Operation cancelled: target directory has existing files. Pass -f to overwrite.".red());
         return false;
     }
 

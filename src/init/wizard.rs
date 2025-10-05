@@ -1,6 +1,7 @@
-use cliclack::{ intro };
+use cliclack::{ intro, outro };
 use colored::*;
 use std::env;
+use std::path::Path;
 
 use crate::init::prompts::{ProjectConfig, get_project_config};
 use crate::init::fs_ops;
@@ -15,27 +16,33 @@ pub fn wizard(skip: bool, project_name: Option<String>, force: bool) {
         Some(name) => {
             let name = name.trim();
             if name.is_empty() {
-                get_project_config(None, skip)
+                get_project_config(None, skip, force)
 
             } else if name == "." {
                 let path = env::current_dir().unwrap();
                 if !fs_ops::check(&path, if force { Some(true) } else { None }) {
                     return;
                 } else {
-                    get_project_config(Some(name.to_string()), skip)
+                    get_project_config(Some(name.to_string()), skip, force)
                 }
 
             } else {
-                get_project_config(Some(name.to_string()), skip)
+                let path = Path::new(name);
+                if !fs_ops::check(&path, if force { Some(true) } else { None }) {
+                    return;
+                } else {
+                    get_project_config(Some(name.to_string()), skip, force)
+                }
             }
         }
         None => {
-            get_project_config(None, skip)
+            get_project_config(None, skip, force)
         }
     };
 
-    scaffold(config, None);
+    let _ = outro("Scaffolding project...".green());
 
+    scaffold(config);
     
 }
 

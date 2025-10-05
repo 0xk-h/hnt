@@ -57,6 +57,8 @@ async fn main() {
 
         //scaffold new project
         Init(init::validate::InitArgs),
+
+        //Config {}
     }
 
     let cli = Cli::parse();

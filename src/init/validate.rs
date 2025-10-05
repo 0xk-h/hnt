@@ -1,9 +1,11 @@
 use clap::{ Parser, ValueEnum };
 use std::env;
+use std::path::Path;
 
 use crate::init;
 use crate::utils::config::HntConfig;
 use crate::init::fs_ops;
+use super::prompts::ProjectConfig;
 
 #[derive(Debug, Parser)]
 pub struct InitArgs {
@@ -33,8 +35,8 @@ pub struct InitArgs {
     #[arg( short, long )]
     force: bool,
 
-    #[arg( long="skip-install",default_value_t=true, action = clap::ArgAction::Set)]
-    skip_install: bool,
+    // #[arg( long="skip-install",default_value_t=true, action = clap::ArgAction::Set)]
+    // skip_install: bool,
 }
 
 #[derive(Clone, Debug, ValueEnum)]
@@ -63,75 +65,89 @@ enum BackendLang {
 pub fn validate(args: &InitArgs) {
 
     println!("validating the prompt");
-    if args.yes {
-        let cfg = HntConfig::load();
-        if !(cfg.init_defaults.frontend.is_empty() && cfg.init_defaults.backend.is_empty()) {
-            eprintln!("Run `hnt config` first to set up defaults or use --quick to skip prompts.");
-            return;
-        }
-
-        let name: String = match args.project_name {
-            Some(ref name) if name.trim().is_empty() => {
-                eprintln!("Invalid project name provided with --yes flag.");
-                return;
-            }
-            Some(ref name) if name.trim() == "." => {
-                let path = env::current_dir()
-                    .expect("Failed to get current directory");
-
-                if !fs_ops::check(&path, Some(false)) {
-                    return;
-                }
-
-                path
-                    .file_name()
-                    .expect("Failed to get directory name")
-                    .to_string_lossy()
-                    .to_string()
-            }
-            None => {
-                eprintln!("Project name is required when using --yes flag.");
-                return;
-            }
-            _ => {
-                args.project_name.clone().unwrap()
-            }
-            
-        };
-
-
-        let cfg = to_project_config(&cfg, name);
-
-        println!("Creating project with config: {:?}", cfg);
-
-        init::scaffold::scaffold(cfg, Some(!args.skip_install));
-
-    }
-
-    if args.frontend.is_none() && args.backend.is_none() {
+    
+    if args.frontend.is_none() && args.backend.is_none() && !args.yes {
         init::wizard::wizard(args.quick , args.project_name.clone(), args.force);
+        return;
     }
+    
+    let cfg = HntConfig::load();
+
+    if cfg.init_defaults.frontend.is_none() && cfg.init_defaults.backend.is_none() && args.frontend.is_none() && args.backend.is_none() {
+        eprintln!("Missing both frontend and backend — Run `hnt config` to set defaults or remove --yes for interactive setup.");
+        return;
+    }
+
+    let name: String = match args.project_name {
+        Some(ref name) if !name.trim().is_empty() && name.trim() != "." => {
+            let name = args.project_name.clone().unwrap();
+            let path = Path::new(&name);
+            if !fs_ops::check(&path, Some(args.force)) {
+                return;
+            }
+            name
+        }
+        _ => {
+            let path = env::current_dir().expect("Failed to get current directory");
+            if !fs_ops::check(&path, Some(args.force)) {
+                return;
+            }
+            String::from(".")
+        }
+    };
+
+    let cfg = to_project_config(&cfg, args, name);
+
+    println!("Creating project with config: {:?}", cfg);
+
+    init::scaffold::scaffold(cfg);
 
 }
 
-fn to_project_config(args: &HntConfig, name: String) -> init::prompts::ProjectConfig {
+fn to_project_config(cfg: &HntConfig, args: &InitArgs, name: String ) -> ProjectConfig {
 
-    let frontend = Some(args.init_defaults.frontend.clone());
-    let backend = Some(args.init_defaults.backend.clone());
+    let frontend: Option<String> = frontend_to_kebab(&args.frontend)
+        .or(cfg.init_defaults.frontend.clone());
+
+    let backend: Option<String> = backend_to_kebab(&args.backend)
+        .or(cfg.init_defaults.backend.clone());
+
+    // Determine project type
+    let project_type = match (&frontend, &backend) {
+        (Some(_), Some(_)) => "Fullstack".to_string(),
+        (Some(_), None) => "Frontend".to_string(),
+        (None, Some(_)) => "Backend".to_string(),
+        _ => "Unknown".to_string()
+    };
 
     init::prompts::ProjectConfig {
         name,
-        project_type: if frontend.is_some() && backend.is_some() {
-            "Fullstack".to_string()
-        } else if frontend.is_some() {
-            "Frontend".to_string()
-        } else {
-            "Backend".to_string()
-        },
+        project_type,
         frontend,
         backend,
-        use_tailwind: args.init_defaults.use_tailwind,
-        git_init: args.init_defaults.git_init,
-        use_shadcn: args.init_defaults.use_shadcn,
+        use_tailwind: args.tailwind || cfg.init_defaults.use_tailwind,
+        git_init: args.git || cfg.init_defaults.git_init,
     }
+}
+
+fn frontend_to_kebab(opt: &Option<FrontendLang>) -> Option<String> {
+    opt.as_ref().map(|f| match f {
+        FrontendLang::React => "react",
+        FrontendLang::ReactTs => "react-ts",
+        FrontendLang::Nextjs => "nextjs",
+        FrontendLang::NextjsTs => "nextjs-ts",
+        FrontendLang::Svelte => "svelte",
+        FrontendLang::Vanilla => "vanilla",
+        FrontendLang::VanillaTs => "vanilla-ts",
+    }.to_string())
+}
+
+fn backend_to_kebab(opt: &Option<BackendLang>) -> Option<String> {
+    opt.as_ref().map(|b| match b {
+        BackendLang::Express => "express",
+        BackendLang::ExpressTs => "express-ts",
+        BackendLang::Fastapi => "fastapi",
+        BackendLang::Gin => "gin",
+        BackendLang::Axum => "axum",
+    }.to_string())
 }
