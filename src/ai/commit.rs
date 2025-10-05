@@ -49,7 +49,11 @@ pub async fn commit_msg() -> Option<String> {
     };
 
     let output = if let Some(text) = res["candidates"][0]["content"]["parts"][0]["text"].as_str() {
-        text
+        if text.trim().is_empty() || text == "[]" {
+            "[\"chore: minor changes\"]"
+        } else {
+            text
+        }
     } else if let Some(err) = res["error"]["message"].as_str() {
         eprintln!("{}",format!("AI Error: {}", err).bold().red());
         return None;
@@ -58,7 +62,6 @@ pub async fn commit_msg() -> Option<String> {
         return None;
     };
 
-    println!("{}",output);
 
     Some(output.to_string())
 }
