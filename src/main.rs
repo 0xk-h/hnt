@@ -15,7 +15,7 @@ async fn main() {
     #[command(
         name = "hnt",
         author = "Kishore Kumar",
-        version = "1.0.0",
+        version = "1.7.1",
         about = "Dev productivity cli tool"
     )]
     struct Cli {
