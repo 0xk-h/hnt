@@ -54,15 +54,20 @@ pub fn copy(src: &str, dest: &Path) -> io::Result<()> {
     })?;
 
     for file in dir.files() {
-        let relative_path = file.path().strip_prefix(src).unwrap();
-        let dest_path = dest.join(relative_path);
+        let path = dest.join(file.path().strip_prefix(src).unwrap());
 
-        if let Some(parent) = dest_path.parent() {
+        if let Some(parent) = path.parent() {
             fs::create_dir_all(parent)?;
         }
 
-        let mut out_file = File::create(dest_path)?;
-        out_file.write_all(file.contents())?;
+        if let Some(file_name) = path.file_name().and_then(|x| x.to_str()) {
+            
+            if file_name == ".gitkeep" {}
+            else {
+                let mut out_file = File::create(path)?;
+                out_file.write_all(file.contents())?;
+            }
+        }
     }
 
     for subdir in dir.dirs() {
