@@ -48,8 +48,6 @@ pub async fn commit_msg() -> Option<String> {
         }
     };
 
-    println!("uyjurtnbgvffffdcntnybrgvfdtnbg");
-
     let output = if let Some(text) = res["candidates"][0]["content"]["parts"][0]["text"].as_str() {
         text
     } else if let Some(err) = res["error"]["message"].as_str() {
@@ -59,6 +57,8 @@ pub async fn commit_msg() -> Option<String> {
         eprintln!("No output found for commit msg");
         return None;
     };
+
+    println!("{}",output);
 
     Some(output.to_string())
 }
