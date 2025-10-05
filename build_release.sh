@@ -10,7 +10,7 @@ set -e
 
 mkdir -p releases
 
-t = "x86_64-unknown-linux-gnu:hnt-linux-x86_64"
+t="x86_64-unknown-linux-gnu:hnt-linux-x86_64"
 
 TARGET=${t%%:*}
 NAME=${t##*:}
