@@ -1,5 +1,6 @@
 use reqwest::Client;
 use serde_json::json;
+
 use crate::utils::config::HntConfig;
 use crate::utils::loader::Loader;
 

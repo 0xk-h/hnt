@@ -2,7 +2,7 @@ import Card from "../components/Card";
 
 const Demo = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0f172a] to-[#1e293b] text-white flex items-center justify-center p-8 cursor-default">
+    <div className="min-h-screen bg-gradient-to-b from-[#0f172a] to-[#1e293b] text-white flex items-center justify-center p-8 cursor-default">
       <div className="max-w-2xl w-full">
         <div className="flex items-center gap-4 mb-8">
           <h1 className="text-5xl font-bold">HNT Scaffold</h1>
