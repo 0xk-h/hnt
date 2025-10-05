@@ -71,7 +71,7 @@ pub async fn push(inputs: &[String], set_upstream: bool, ai: bool, dry_run: bool
             inputs[0].clone()
         }
     };
-    println!("{}",format!("Using commit message => \"{}\"", &msg).bold().green());
+    println!("{}",format!("Using commit message - \"{}\"", &msg).yellow());
 
     if dry_run {
         return;
