@@ -62,6 +62,8 @@ pub async fn commit_msg() -> Option<String> {
         return None;
     };
 
+    // remove this line before publish
+    println!("the output from gemini {}",output);
 
     Some(output.to_string())
 }
