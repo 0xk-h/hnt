@@ -2,10 +2,12 @@
 use std::fs;
 use std::env;
 use std::path::{PathBuf};
+use std::collections::HashMap;
 
 use crate::init::prompts::ProjectConfig;
 use crate::utils::pkg_manager::detect_package_manager;
 use crate::init::fs_ops::copy;
+use crate::init::helper::get_name;
 
 pub fn create(config: &ProjectConfig) -> std::io::Result<()> {
     if !(detect_package_manager("npm")) {
@@ -29,36 +31,19 @@ pub fn create(config: &ProjectConfig) -> std::io::Result<()> {
         fs::create_dir_all(&path)?;
     }
 
-    let mut replacements = std::collections::HashMap::new();
-    replacements.insert("{{project_name}}", &config.name as &str);
-    if let Some(frontend) = &config.frontend {
-        replacements.insert("{{frontend}}", frontend as &str);
-    }
+    let name: String = get_name(&config.name);
 
-    copy("react/tailwind", &path)?;
+    let index_replacements: HashMap<&str, &str> = HashMap::from([
+        ("{{NAME}}", name.as_str())
+    ]);
+
+    let mut replacements = std::collections::HashMap::new();
+    replacements.insert("index.html", index_replacements);
+
+    copy("react/tailwind", &path, &replacements)?;
 
 
     println!("Project created successfully at {:?}", path);
 
     Ok(())
 }
-
-// fn copy_dir_all(src: &Path, dst: &Path) -> std::io::Result<()> {
-//     if !dst.exists() {
-//         fs::create_dir_all(dst)?;
-//     }
-
-//     for entry in fs::read_dir(src)? {
-//         let entry = entry?;
-//         let path = entry.path();
-//         let dest = dst.join(entry.file_name());
-
-//         if path.is_dir() {
-//             copy_dir_all(&path, &dest)?;
-//         } else {
-//             fs::copy(&path, &dest)?;
-//         }
-//     }
-
-//     Ok(())
-// }

@@ -2,7 +2,8 @@ use cliclack::{ outro, select};
 use colored::*;
 use std::io::{self, Write};
 use std::fs::{self, File};
-use std::path::Path;
+use std::path::{Path, PathBuf};
+use std::collections::HashMap;
 use include_dir::{Dir, include_dir};
 
 static TEMPLATES: Dir = include_dir!("$CARGO_MANIFEST_DIR/templates");
@@ -49,7 +50,7 @@ fn is_empty(dir: &Path) -> bool {
     fs::read_dir(dir).map(|mut entries| entries.next().is_none()).unwrap_or(true)
 }
 
-pub fn copy(src: &str, dest: &Path) -> io::Result<()> {
+pub fn copy(src: &str, dest: &Path, file_replacements: &HashMap<&str, HashMap<&str, &str>>) -> io::Result<()> {
     let dir = TEMPLATES.get_dir(src).ok_or_else(|| {
         io::Error::new(io::ErrorKind::NotFound, format!("Directory '{}' not found", src))
     })?;
@@ -64,7 +65,9 @@ pub fn copy(src: &str, dest: &Path) -> io::Result<()> {
         if let Some(file_name) = path.file_name().and_then(|x| x.to_str()) {
             
             if file_name == ".gitkeep" {}
-            else {
+            else if let Some(replacements) = file_replacements.get(file_name) {
+                copy_with_replacement(&path, file.contents(), replacements)?;
+            } else {
                 let mut out_file = File::create(path)?;
                 out_file.write_all(file.contents())?;
             }
@@ -73,8 +76,24 @@ pub fn copy(src: &str, dest: &Path) -> io::Result<()> {
 
     for subdir in dir.dirs() {
         let sub_dest = dest.join(subdir.path().strip_prefix(src).unwrap());
-        copy(subdir.path().to_str().unwrap(), &sub_dest)?;
+        copy(subdir.path().to_str().unwrap(), &sub_dest, file_replacements)?;
     }
+
+    Ok(())
+}
+
+fn copy_with_replacement(path: &PathBuf, file_contents: &[u8], replacements: &HashMap<&str, &str>) -> io::Result<()> {
+
+    let contents = std::str::from_utf8(file_contents)
+        .map_err(|e| io::Error::new(io::ErrorKind::InvalidData, e))?;
+
+    let mut result = contents.to_string();
+    for (from, to) in replacements.iter() {
+        result = result.replace(from, to);
+    }
+
+    let mut out_file = File::create(path)?;
+    out_file.write_all(result.as_bytes())?;
 
     Ok(())
 }
