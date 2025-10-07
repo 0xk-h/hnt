@@ -3,7 +3,7 @@ use colored::*;
 use std::io::{self, Write};
 use std::fs::{self, File};
 use std::path::{Path, PathBuf};
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use include_dir::{Dir, include_dir};
 
 static TEMPLATES: Dir = include_dir!("$CARGO_MANIFEST_DIR/templates");
@@ -50,13 +50,13 @@ fn is_empty(dir: &Path) -> bool {
     fs::read_dir(dir).map(|mut entries| entries.next().is_none()).unwrap_or(true)
 }
 
-pub fn copy(src: &str, dest: &Path, file_replacements: &HashMap<&str, HashMap<&str, &str>>) -> io::Result<()> {
+pub fn copy(src: &str, dest: &Path, file_replacements: &HashMap<&str, HashMap<&str, &str>>, skip: &HashSet<&str>, rename: &HashMap<&str, &str> ) -> io::Result<()> {
     let dir = TEMPLATES.get_dir(src).ok_or_else(|| {
         io::Error::new(io::ErrorKind::NotFound, format!("Directory '{}' not found", src))
     })?;
 
     for file in dir.files() {
-        let path = dest.join(file.path().strip_prefix(src).unwrap());
+        let mut path = dest.join(file.path().strip_prefix(src).unwrap());
 
         if let Some(parent) = path.parent() {
             fs::create_dir_all(parent)?;
@@ -64,10 +64,13 @@ pub fn copy(src: &str, dest: &Path, file_replacements: &HashMap<&str, HashMap<&s
 
         if let Some(file_name) = path.file_name().and_then(|x| x.to_str()) {
             
-            if file_name == ".gitkeep" {}
+            if skip.contains(file_name) {}
             else if let Some(replacements) = file_replacements.get(file_name) {
                 copy_with_replacement(&path, file.contents(), replacements)?;
             } else {
+                if let Some(new_name) = rename.get(file_name) {
+                    path.set_file_name(new_name);
+                }
                 let mut out_file = File::create(path)?;
                 out_file.write_all(file.contents())?;
             }
@@ -76,7 +79,7 @@ pub fn copy(src: &str, dest: &Path, file_replacements: &HashMap<&str, HashMap<&s
 
     for subdir in dir.dirs() {
         let sub_dest = dest.join(subdir.path().strip_prefix(src).unwrap());
-        copy(subdir.path().to_str().unwrap(), &sub_dest, file_replacements)?;
+        copy(subdir.path().to_str().unwrap(), &sub_dest, &file_replacements, &skip, &rename)?;
     }
 
     Ok(())

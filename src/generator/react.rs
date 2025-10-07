@@ -2,7 +2,7 @@
 use std::fs;
 use std::env;
 use std::path::{PathBuf};
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 use crate::init::prompts::ProjectConfig;
 use crate::utils::pkg_manager::detect_package_manager;
@@ -37,10 +37,25 @@ pub fn create(config: &ProjectConfig) -> std::io::Result<()> {
         ("{{NAME}}", name.as_str())
     ]);
 
-    let mut replacements = std::collections::HashMap::new();
+    let mut replacements = HashMap::new();
     replacements.insert("index.html", index_replacements);
 
-    copy("react/tailwind", &path, &replacements)?;
+    let mut skip: HashSet<&str> = HashSet::from([".gitkeep"]);
+    if config.project_type != "Fullstack" {
+        skip.insert("message.js");
+        skip.insert("DemoFullstack.jsx");
+    } else {
+        skip.insert("DemoFrontendOnly.jsx");
+    }
+
+    let mut rename = HashMap::new();
+    if config.project_type != "Fullstack"{
+        rename.insert("DemoFrontendOnly.jsx", "Demo.jsx");
+    } else {
+        rename.insert("DemoFullstack.jsx", "Demo.jsx");
+    }
+
+    copy("react/tailwind", &path, &replacements, &skip, &rename)?;
 
 
     println!("Project created successfully at {:?}", path);
