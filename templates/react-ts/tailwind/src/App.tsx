@@ -1,5 +1,7 @@
+import Demo from "@/pages/Demo";
+
 const App = () => {
-  return <h1> Hello World! </h1>;
+  return <Demo />;
 };
 
 export default App;
