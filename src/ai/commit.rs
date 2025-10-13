@@ -49,14 +49,6 @@ pub async fn commit_msg() -> Option<String> {
     };
 
     let output = if let Some(text) = res["candidates"][0]["content"]["parts"][0]["text"].as_str() {
-
-        // remove this line before publish
-        // remove it
-        println!("the output from gemini {}",text);
-        //defenitely remove it
-        
-
-
         if text.trim().is_empty() || text == "[]" {
             "[\"chore: minor changes\"]"
         } else {
@@ -69,9 +61,6 @@ pub async fn commit_msg() -> Option<String> {
         eprintln!("No output found for commit msg");
         return None;
     };
-
-    // remove this line before publish
-    println!("the output from gemini {}",output);
 
     Some(output.to_string())
 }
