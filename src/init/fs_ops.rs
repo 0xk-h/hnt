@@ -15,7 +15,10 @@ pub fn check(path: &Path, force: Option<bool>) -> bool {
     }
 
     if force == Some(true) {
-        // remove
+        fs::remove_dir_all(path).unwrap_or_else(|e| {
+            eprintln!("Failed to remove existing directory: {}", e);
+            std::process::exit(1);
+        });
         return true;
     }
 
@@ -33,7 +36,10 @@ pub fn check(path: &Path, force: Option<bool>) -> bool {
 
         match ans {
             1 => {
-                // remove all files
+                fs::remove_dir_all(path).unwrap_or_else(|e| {
+                    eprintln!("Failed to remove existing directory: {}", e);
+                    std::process::exit(1);
+                });
                 return true;
             }
             2 => {
@@ -69,6 +75,7 @@ pub fn copy(src: &str, dest: &Path, file_replacements: &HashMap<&str, HashMap<&s
                 copy_with_replacement(&path, file.contents(), replacements)?;
             } else {
                 if let Some(new_name) = rename.get(file_name) {
+                    println!("Renaming {} to {}", file_name, new_name);
                     path.set_file_name(new_name);
                 }
                 let mut out_file = File::create(path)?;

@@ -12,29 +12,23 @@ const Demo = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#0f172a] to-[#1e293b] text-white flex items-center justify-center p-8 cursor-default">
-      <div className="max-w-2xl w-full">
-        <div className="flex items-center gap-4 mb-8">
-          <h1 className="text-5xl font-bold">HNT Scaffold</h1>
+    <div className="demo-container">
+      <div className="demo-inner">
+        <div className="demo-header">
+          <h1>HNT Scaffold</h1>
         </div>
 
-        <div className="bg-[#1e293b] rounded-lg p-8 border border-slate-700 mb-6 shadow-lg">
-          <h2 className="text-2xl font-semibold mb-4 text-slate-200">
-            Frontend & Backend Connected
-          </h2>
-          <p className="text-slate-400 mb-4">
-            Your backend is running successfully! Here's what it says:
-          </p>
-          <div className="bg-[#0f172a] px-4 py-3 rounded-lg font-mono text-sm text-green-400 border border-slate-700 shadow-md">
-            {message}
-          </div>
+        <div className="welcome-card">
+          <h2>Frontend & Backend Connected</h2>
+          <p>Your backend is running successfully! Here's what it says:</p>
+          <div className="entry-file">{message}</div>
           <p className="text-slate-500 text-xs mt-3 italic">
             (Fetched dynamically from your backend API at{" "}
             <code>/api/message</code>)
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="card-grid">
           <Card
             title="Edit src/App.jsx"
             description="Your main application file. Modify it to start building."
@@ -56,9 +50,7 @@ const Demo = () => {
           />
         </div>
 
-        <p className="text-center text-slate-500 mt-8 text-sm">
-          Powered by HNT CLI
-        </p>
+        <p className="footer-text">Powered by HNT CLI</p>
       </div>
     </div>
   );

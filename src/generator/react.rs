@@ -64,15 +64,16 @@ pub fn create(config: &ProjectConfig) -> std::io::Result<()> {
         }
     }
     if config.use_tailwind{
-        if !src.is_empty() {
+        if src.is_empty() {
             return Err(std::io::Error::new(std::io::ErrorKind::Other, "No frontend specified"));
         }
         src.push_str("/tailwind");
     } else {
         src.push_str("/base");
     }
+    print!("Using template: {}\n", src);
 
-    copy(src.as_str(), &path, &replacements, &skip, &rename)?;
+    copy(&src, &path, &replacements, &skip, &rename)?;
 
 
     println!("Project created successfully at {:?}", path);

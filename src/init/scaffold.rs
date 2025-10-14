@@ -18,6 +18,7 @@ pub fn scaffold(config: ProjectConfig) {
         };
         if let Err(e) = res {
             eprintln!("Failed to scaffold frontend '{}': {}", frontend.as_str(), e);
+            return;
         }
     }
 
