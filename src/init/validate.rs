@@ -1,6 +1,8 @@
 use clap::{ Parser, ValueEnum };
 use std::env;
+use std::fmt::Debug;
 use std::path::Path;
+use heck::ToKebabCase;
 
 use crate::init;
 use crate::utils::config::HntConfig;
@@ -106,10 +108,10 @@ pub fn validate(args: &InitArgs) {
 
 fn to_project_config(cfg: &HntConfig, args: &InitArgs, name: String ) -> ProjectConfig {
 
-    let frontend: Option<String> = frontend_to_kebab(&args.frontend)
+    let frontend: Option<String> = enum_to_kebab(&args.frontend)
         .or(cfg.init_defaults.frontend.clone());
 
-    let backend: Option<String> = backend_to_kebab(&args.backend)
+    let backend: Option<String> = enum_to_kebab(&args.backend)
         .or(cfg.init_defaults.backend.clone());
 
     // Determine project type
@@ -130,24 +132,6 @@ fn to_project_config(cfg: &HntConfig, args: &InitArgs, name: String ) -> Project
     }
 }
 
-fn frontend_to_kebab(opt: &Option<FrontendLang>) -> Option<String> {
-    opt.as_ref().map(|f| match f {
-        FrontendLang::React => "react",
-        FrontendLang::ReactTs => "react-ts",
-        FrontendLang::Nextjs => "nextjs",
-        FrontendLang::NextjsTs => "nextjs-ts",
-        FrontendLang::Svelte => "svelte",
-        FrontendLang::Vanilla => "vanilla",
-        FrontendLang::VanillaTs => "vanilla-ts",
-    }.to_string())
-}
-
-fn backend_to_kebab(opt: &Option<BackendLang>) -> Option<String> {
-    opt.as_ref().map(|b| match b {
-        BackendLang::Express => "express",
-        BackendLang::ExpressTs => "express-ts",
-        BackendLang::Fastapi => "fastapi",
-        BackendLang::Gin => "gin",
-        BackendLang::Axum => "axum",
-    }.to_string())
+fn enum_to_kebab<T: Debug>(opt: &Option<T>) -> Option<String> {
+    opt.as_ref().map(|t| format!("{:?}", t).to_kebab_case())
 }
