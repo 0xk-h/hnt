@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { fetchMessage } from "../api/message";
-import Card from "../components/Card";
+import { fetchMessage } from "../../api/message";
+import Card from "../../components/Card/Card";
+import "./Demo.css";
 
 const Demo = () => {
   const [message, setMessage] = useState("Loading...");
@@ -21,8 +22,8 @@ const Demo = () => {
         <div className="welcome-card">
           <h2>Frontend & Backend Connected</h2>
           <p>Your backend is running successfully! Here's what it says:</p>
-          <div className="entry-file">{message}</div>
-          <p className="text-slate-500 text-xs mt-3 italic">
+          <div className="highlight-box">{message}</div>
+          <p className="api-note">
             (Fetched dynamically from your backend API at{" "}
             <code>/api/message</code>)
           </p>

@@ -3,6 +3,7 @@ use std::fs;
 use std::env;
 use std::path::{PathBuf};
 use std::collections::{HashMap, HashSet};
+use colored::*;
 
 use crate::init::prompts::ProjectConfig;
 use crate::utils::pkg_manager::detect_package_manager;
@@ -72,6 +73,9 @@ pub fn create(config: &ProjectConfig) -> std::io::Result<()> {
         src.push_str("/base");
     }
     print!("Using template: {}\n", src);
+    println!("replacements: {:?}\n skip: {:?}\n rename: {:?}", replacements, skip, rename);
+
+    println!("{}","Creating project".bold().green());
 
     copy(&src, &path, &replacements, &skip, &rename)?;
 

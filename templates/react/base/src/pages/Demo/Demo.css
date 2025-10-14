@@ -47,13 +47,20 @@
   margin-bottom: 1rem;
 }
 
-.entry-file {
+.highlight-box {
   background-color: #0f172a;
   padding: 0.75rem 1rem;
   border-radius: 0.5rem;
   font-family: monospace;
   font-size: 0.875rem;
   color: #22c55e;
+}
+
+.api-note {
+  color: #6b7280;
+  font-size: 0.75rem;
+  margin-top: 0.75rem;
+  font-style: italic;
 }
 
 .card-grid {
