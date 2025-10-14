@@ -55,7 +55,24 @@ pub fn create(config: &ProjectConfig) -> std::io::Result<()> {
         rename.insert("DemoFullstack.jsx", "Demo.jsx");
     }
 
-    copy("react/tailwind", &path, &replacements, &skip, &rename)?;
+    let mut src = String::from("");
+    if let Some(frontend) = &config.frontend {
+        if frontend == "react"  {
+            src.push_str("react");
+        } else if frontend == "react-ts" {
+            src.push_str("react-ts");
+        }
+    }
+    if config.use_tailwind{
+        if !src.is_empty() {
+            return Err(std::io::Error::new(std::io::ErrorKind::Other, "No frontend specified"));
+        }
+        src.push_str("/tailwind");
+    } else {
+        src.push_str("/base");
+    }
+
+    copy(src.as_str(), &path, &replacements, &skip, &rename)?;
 
 
     println!("Project created successfully at {:?}", path);
