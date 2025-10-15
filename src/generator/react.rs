@@ -28,7 +28,7 @@ pub fn create(config: &ProjectConfig) -> std::io::Result<()> {
     } else {
         PathBuf::from(&config.name)
     };
-    if &config.project_type != "Fullstack" {
+    if &config.project_type == "Fullstack" {
         path.push("frontend");
     }
     if !path.exists() {
