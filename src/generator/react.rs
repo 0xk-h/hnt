@@ -23,11 +23,14 @@ pub fn create(config: &ProjectConfig) -> std::io::Result<()> {
         }
     }
 
-    let path: PathBuf = if config.name == "." {
+    let mut path: PathBuf = if config.name == "." {
         env::current_dir()?
     } else {
         PathBuf::from(&config.name)
     };
+    if &config.project_type != "Fullstack" {
+        path.push("frontend");
+    }
     if !path.exists() {
         fs::create_dir_all(&path)?;
     }
