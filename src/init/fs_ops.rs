@@ -56,7 +56,7 @@ fn is_empty(dir: &Path) -> bool {
     fs::read_dir(dir).map(|mut entries| entries.next().is_none()).unwrap_or(true)
 }
 
-pub fn copy(src: &str, dest: &Path, file_replacements: &HashMap<&str, HashMap<&str, &str>>, skip: &HashSet<&str>, rename: &HashMap<&str, &str> ) -> io::Result<()> {
+pub fn copy(src: &str, dest: &Path, file_replacements: &HashMap<String, HashMap<&str, &str>>, skip: &HashSet<String>, rename: &HashMap<String, String> ) -> io::Result<()> {
     let dir = TEMPLATES.get_dir(src).ok_or_else(|| {
         io::Error::new(io::ErrorKind::NotFound, format!("Directory '{}' not found", src))
     })?;

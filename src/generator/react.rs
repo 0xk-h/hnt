@@ -34,36 +34,19 @@ pub fn create(config: &ProjectConfig) -> std::io::Result<()> {
 
     let name: String = get_name(&config.name);
 
-    let index_replacements: HashMap<&str, &str> = HashMap::from([
-        ("{{NAME}}", name.as_str())
-    ]);
-
-    let mut replacements = HashMap::new();
-    replacements.insert("index.html", index_replacements);
-
-    let mut skip: HashSet<&str> = HashSet::from([".gitkeep"]);
-    if config.project_type != "Fullstack" {
-        skip.insert("message.js");
-        skip.insert("DemoFullstack.jsx");
-    } else {
-        skip.insert("DemoFrontendOnly.jsx");
-    }
-
-    let mut rename = HashMap::new();
-    if config.project_type != "Fullstack"{
-        rename.insert("DemoFrontendOnly.jsx", "Demo.jsx");
-    } else {
-        rename.insert("DemoFullstack.jsx", "Demo.jsx");
-    }
-
+    let mut end = String::from("");
     let mut src = String::from("");
+
     if let Some(frontend) = &config.frontend {
         if frontend == "react"  {
             src.push_str("react");
+            end.push_str("jsx");
         } else if frontend == "react-ts" {
             src.push_str("react-ts");
+            end.push_str("tsx");
         }
     }
+
     if config.use_tailwind{
         if src.is_empty() {
             return Err(std::io::Error::new(std::io::ErrorKind::Other, "No frontend specified"));
@@ -72,6 +55,29 @@ pub fn create(config: &ProjectConfig) -> std::io::Result<()> {
     } else {
         src.push_str("/base");
     }
+
+    let index_replacements: HashMap<&str, &str> = HashMap::from([
+        ("{{NAME}}", name.as_str())
+    ]);
+
+    let mut replacements = HashMap::new();
+    replacements.insert(String::from("index.html"), index_replacements);
+
+    let mut skip: HashSet<String> = HashSet::from([String::from(".gitkeep")]);
+    if config.project_type != "Fullstack" {
+        skip.insert(format!("message.{}", &end[..2]));
+        skip.insert(format!("DemoFullstack.{}", &end));
+    } else {
+        skip.insert(format!("DemoFrontendOnly.{}", &end));
+    }
+
+    let mut rename = HashMap::new();
+    if config.project_type != "Fullstack"{
+        rename.insert(format!("DemoFrontendOnly.{}", &end), format!("Demo.{}", &end));
+    } else {
+        rename.insert(format!("DemoFullstack.{}", &end), format!("Demo.{}", &end));
+    }
+
     print!("Using template: {}\n", src);
     println!("replacements: {:?}\n skip: {:?}\n rename: {:?}", replacements, skip, rename);
 
