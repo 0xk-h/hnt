@@ -15,12 +15,12 @@ const Demo: React.FC = () => {
             Your React frontend is ready. Start building your application by
             editing the entry file below.
           </p>
-          <div className="highlight-box">src/App.jsx</div>
+          <div className="highlight-box">src/App.tsx</div>
         </div>
 
         <div className="card-grid">
           <Card
-            title="Edit src/App.jsx"
+            title="Edit src/App.tsx"
             description="Your main application file. Modify it to start building."
           />
           <Card

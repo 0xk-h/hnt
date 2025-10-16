@@ -31,7 +31,7 @@ const Demo: React.FC = () => {
 
         <div className="card-grid">
           <Card
-            title="Edit src/App.jsx"
+            title="Edit src/App.tsx"
             description="Your main application file. Modify it to start building."
           />
           <Card
