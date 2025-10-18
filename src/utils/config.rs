@@ -1,7 +1,7 @@
+use cliclack::confirm;
 use serde::{Deserialize, Serialize};
 use std::fs;
 use std::path::PathBuf;
-use cliclack::confirm;
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct HntConfig {
@@ -42,10 +42,12 @@ impl HntConfig {
                 eprintln!("Failed to parse config file: {}", e);
                 eprintln!("This may be due to an old or incompatible config version.");
 
-                let reset = confirm("Do you want to reset the config to defaults? (Old config will be backed up)")
-                    .initial_value(true)
-                    .interact()
-                    .unwrap_or(true);
+                let reset = confirm(
+                    "Do you want to reset the config to defaults? (Old config will be backed up)",
+                )
+                .initial_value(true)
+                .interact()
+                .unwrap_or(true);
 
                 if reset {
                     // Backup old config
@@ -55,7 +57,10 @@ impl HntConfig {
                     // Create new config
                     let cfg = Self::default_config();
                     cfg.save();
-                    println!("New default config created. Old config backed up as {:?}", backup_path);
+                    println!(
+                        "New default config created. Old config backed up as {:?}",
+                        backup_path
+                    );
                     cfg
                 } else {
                     println!("Keeping the old config file as-is. Exiting.");

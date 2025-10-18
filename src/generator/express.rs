@@ -1,14 +1,14 @@
 // use std::process::Command;
-use std::fs;
-use std::env;
-use std::path::{PathBuf};
-use std::collections::{HashMap, HashSet};
 use colored::*;
+use std::collections::{HashMap, HashSet};
+use std::env;
+use std::fs;
+use std::path::PathBuf;
 
-use crate::init::prompts::ProjectConfig;
-use crate::utils::pkg_manager::detect_package_manager;
 use crate::init::fs_ops::copy;
 use crate::init::helper::get_name;
+use crate::init::prompts::ProjectConfig;
+use crate::utils::pkg_manager::detect_package_manager;
 
 pub fn create(config: &ProjectConfig) -> std::io::Result<()> {
     if !(detect_package_manager("npm")) {
@@ -35,12 +35,11 @@ pub fn create(config: &ProjectConfig) -> std::io::Result<()> {
         fs::create_dir_all(&path)?;
     }
 
-    
     let mut end = String::from("");
     let mut src = String::from("");
-    
+
     if let Some(backend) = &config.backend {
-        if backend == "express"  {
+        if backend == "express" {
             src.push_str("express");
             end.push_str("js");
         } else if backend == "express-ts" {
@@ -48,12 +47,10 @@ pub fn create(config: &ProjectConfig) -> std::io::Result<()> {
             end.push_str("ts");
         }
     }
-    
+
     let name: String = get_name(&config.name);
 
-    let package_replacements: HashMap<&str, &str> = HashMap::from([
-        ("{{NAME}}", name.as_str())
-    ]);
+    let package_replacements: HashMap<&str, &str> = HashMap::from([("{{NAME}}", name.as_str())]);
 
     let mut replacements = HashMap::new();
     replacements.insert(String::from("package.json"), package_replacements);
@@ -65,12 +62,14 @@ pub fn create(config: &ProjectConfig) -> std::io::Result<()> {
     rename.insert(String::from("_gitignore"), String::from(".gitignore"));
 
     print!("Using template: {}\n", src);
-    println!("replacements: {:?}\n skip: {:?}\n rename: {:?}", replacements, skip, rename);
+    println!(
+        "replacements: {:?}\n skip: {:?}\n rename: {:?}",
+        replacements, skip, rename
+    );
 
-    println!("{}","Creating project".bold().green());
+    println!("{}", "Creating project".bold().green());
 
     copy(&src, &path, &replacements, &skip, &rename)?;
-
 
     println!("Project created successfully at {:?}", path);
 

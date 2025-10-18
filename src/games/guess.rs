@@ -1,19 +1,29 @@
-use std::io::{self, Write};
 use colored::*;
+use std::io::{self, Write};
 
 fn print_banner() {
-    println!("{}", r#"
- (`─').─>           <─. (`─')_ (`─')      (`─')  _   (`─')  
- (OO )__      .─>      ╲( OO) )( OO).─>   ( OO).─╱<─.(OO )  
-,──. ,'─',──.(,──.  ,──./ ,──╱ /    '._  (,──────.,──────,) 
-│  │ │  ││  │ │(`─')│   ╲ │  │ │'──...__) │  .───'│   /`. ' 
-│  `─'  ││  │ │(OO )│  . '│  │)`──.  .──'(│  '──. │  │_.' │ 
-│  .─.  ││  │ │ │  ╲│  │╲    │    │  │    │  .──' │  .   .' 
-│  │ │  │╲  '─'(_ .'│  │ ╲   │    │  │    │  `───.│  │╲  ╲  
-`──' `──' `─────'   `──'  `──'    `──'    `──────'`──' '──' 
-"#.bold().bright_purple()
+    println!(
+        "{}",
+        r#"
+ (`─').─>           <─. (`─')_ (`─')      (`─')  _   (`─')
+ (OO )__      .─>      ╲( OO) )( OO).─>   ( OO).─╱<─.(OO )
+,──. ,'─',──.(,──.  ,──./ ,──╱ /    '._  (,──────.,──────,)
+│  │ │  ││  │ │(`─')│   ╲ │  │ │'──...__) │  .───'│   /`. '
+│  `─'  ││  │ │(OO )│  . '│  │)`──.  .──'(│  '──. │  │_.' │
+│  .─.  ││  │ │ │  ╲│  │╲    │    │  │    │  .──' │  .   .'
+│  │ │  │╲  '─'(_ .'│  │ ╲   │    │  │    │  `───.│  │╲  ╲
+`──' `──' `─────'   `──'  `──'    `──'    `──────'`──' '──'
+"#
+        .bold()
+        .bright_purple()
     );
-    println!("{}{}", " ".repeat(12), "🎲 Welcome to the Guessing Game! 🎲".bold().bright_magenta());
+    println!(
+        "{}{}",
+        " ".repeat(12),
+        "🎲 Welcome to the Guessing Game! 🎲"
+            .bold()
+            .bright_magenta()
+    );
     println!();
 }
 
@@ -38,7 +48,10 @@ pub fn guess(number: i32) {
 
 pub fn start() {
     print_banner();
-    println!("{}", "Guess a number between 1-10, or 'q' to quit.".dimmed());
+    println!(
+        "{}",
+        "Guess a number between 1-10, or 'q' to quit.".dimmed()
+    );
 
     let secret = rand::random_range(1..=10);
     let mut guess = 0;
@@ -53,7 +66,7 @@ pub fn start() {
 
         let quits = ["q", "Q", "quit", "Quit", "QUIT"];
         if quits.contains(&input) {
-            println!("{}","Quitting game...".blue());
+            println!("{}", "Quitting game...".blue());
             break;
         }
 
@@ -64,7 +77,15 @@ pub fn start() {
                 }
                 if num == secret {
                     guess += 1;
-                    println!("{}", format!("🎉 {} The secret number was {}.", "Correct!".bold(), num.to_string().bold()).green());
+                    println!(
+                        "{}",
+                        format!(
+                            "🎉 {} The secret number was {}.",
+                            "Correct!".bold(),
+                            num.to_string().bold()
+                        )
+                        .green()
+                    );
 
                     let reply = match guess {
                         1 => "🌿 First try? Go touch some grass, dude!",
@@ -74,7 +95,11 @@ pub fn start() {
                         6..=7 => "😵 Bruh… did you forget this was a game or nah?",
                         _ => "😂 Iconic struggle… even a snail was judging your pace!",
                     };
-                    println!("{}", format!("   You guessed in {} attempts!", guess.to_string().bold()).yellow());
+                    println!(
+                        "{}",
+                        format!("   You guessed in {} attempts!", guess.to_string().bold())
+                            .yellow()
+                    );
                     println!("{}", reply.bold().blue());
                     break;
                 } else if num < secret {
@@ -82,10 +107,15 @@ pub fn start() {
                     println!("{}", "Too low! Try again.".red());
                 } else {
                     guess += 1;
-                    println!("{}","Too high! Try again.".red());
+                    println!("{}", "Too high! Try again.".red());
                 }
             }
-            Err(_) => println!("{}", "Invalid input. Enter a number between 1-10, or 'q' to quit.".bold().red()),
+            Err(_) => println!(
+                "{}",
+                "Invalid input. Enter a number between 1-10, or 'q' to quit."
+                    .bold()
+                    .red()
+            ),
         }
     }
 

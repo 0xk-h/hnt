@@ -4,7 +4,10 @@ use serde_json::json;
 use crate::utils::config::HntConfig;
 use crate::utils::loader::Loader;
 
-async fn call(prompt: &str, api_key: &str) -> Result<serde_json::Value, Box<dyn std::error::Error>> {
+async fn call(
+    prompt: &str,
+    api_key: &str,
+) -> Result<serde_json::Value, Box<dyn std::error::Error>> {
     let payload = json!({
         "contents": [
             { "parts": [{ "text": prompt }] }
@@ -24,9 +27,7 @@ async fn call(prompt: &str, api_key: &str) -> Result<serde_json::Value, Box<dyn 
     Ok(result)
 }
 
-
 pub async fn ai(prompt: &str) -> Result<serde_json::Value, Box<dyn std::error::Error>> {
-
     let api_key = HntConfig::load().api.gemini_api_key;
     if api_key.is_empty() {
         return Err("No API key found".into());

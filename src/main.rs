@@ -1,16 +1,15 @@
 use clap::{Parser, Subcommand};
 use tokio;
 
-mod games;
-mod git;
-mod utils;
 mod ai;
-mod init;
+mod games;
 mod generator;
+mod git;
+mod init;
+mod utils;
 
 #[tokio::main]
 async fn main() {
-
     #[derive(Parser)]
     #[command(
         name = "hnt",
@@ -41,11 +40,11 @@ async fn main() {
             dry_run: bool,
 
             #[arg(trailing_var_arg = true)]
-            input : Vec<String>,
+            input: Vec<String>,
         },
         // AI commands
         Ai {
-            #[arg(short,long, group = "ai")]
+            #[arg(short, long, group = "ai")]
             key: Option<String>,
 
             #[arg(group = "ai")]
@@ -57,7 +56,6 @@ async fn main() {
 
         //scaffold new project
         Init(init::validate::InitArgs),
-
         //Config {}
     }
 
@@ -67,15 +65,19 @@ async fn main() {
         Commands::Guess { number } => {
             games::guess_parser::parse_guess(number);
         }
-        Commands::Push { input, set_upstream, ai, dry_run } => {
+        Commands::Push {
+            input,
+            set_upstream,
+            ai,
+            dry_run,
+        } => {
             git::push::push(&input, set_upstream, ai, dry_run).await;
         }
         Commands::Ai { key, prompt, full } => {
             ai::handler::handle_prompt(key, prompt, full).await;
         }
-        Commands::Init(init_args)    => {
+        Commands::Init(init_args) => {
             init::validate::validate(&init_args);
-        }
-        //_ => println!("Command not recognized. Please enter a valid command"),
+        } //_ => println!("Command not recognized. Please enter a valid command"),
     }
 }

@@ -1,22 +1,24 @@
-use std::process::Command;
 use crate::ai::call_ai;
 use colored::*;
+use std::process::Command;
 
 pub async fn commit_msg() -> Option<String> {
-
     let output = Command::new("git")
         .args(["diff", "--cached"])
         .output()
         .expect("Failed to run git diff --cached");
 
     if !output.status.success() {
-        eprintln!("{}","git diff --cached failed".red());
+        eprintln!("{}", "git diff --cached failed".red());
         return None;
     }
 
     if output.stdout.is_empty() {
-    eprintln!("{}","No changes detected. Modify files before running this command.".yellow());
-    return None;
+        eprintln!(
+            "{}",
+            "No changes detected. Modify files before running this command.".yellow()
+        );
+        return None;
     }
 
     let diff = String::from_utf8_lossy(&output.stdout);
@@ -40,9 +42,16 @@ pub async fn commit_msg() -> Option<String> {
         Err(err) => {
             let err = err.to_string();
             if err == "No API key found" {
-                eprintln!("{}","No API key found. Please set it using `hnt ai --key <YOUR_API_KEY>`".bold().red());
+                eprintln!(
+                    "{}",
+                    "No API key found. Please set it using `hnt ai --key <YOUR_API_KEY>`"
+                        .bold()
+                        .red()
+                );
             } else {
-                eprintln!("Error could not reach AI service. Check your internet connection and try again");
+                eprintln!(
+                    "Error could not reach AI service. Check your internet connection and try again"
+                );
             }
             return None;
         }
@@ -55,7 +64,7 @@ pub async fn commit_msg() -> Option<String> {
             text
         }
     } else if let Some(err) = res["error"]["message"].as_str() {
-        eprintln!("{}",format!("AI Error: {}", err).bold().red());
+        eprintln!("{}", format!("AI Error: {}", err).bold().red());
         return None;
     } else {
         eprintln!("No output found for commit msg");
@@ -64,4 +73,3 @@ pub async fn commit_msg() -> Option<String> {
 
     Some(output.to_string())
 }
-

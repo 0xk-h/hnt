@@ -1,8 +1,7 @@
 use crate::ai;
 use serde_json;
 
-pub async fn handle_prompt( key: Option<String>, prompt: Option<String>, full: bool ) {
-
+pub async fn handle_prompt(key: Option<String>, prompt: Option<String>, full: bool) {
     if let Some(new_key) = key {
         ai::update_api_key::key(&new_key);
     } else if let Some(p) = prompt {
@@ -11,9 +10,13 @@ pub async fn handle_prompt( key: Option<String>, prompt: Option<String>, full: b
             Err(err) => {
                 let err = err.to_string();
                 if err == "No API key found" {
-                    eprintln!("No API key found. Please set it using `hnt ai --key <YOUR_API_KEY>`");
+                    eprintln!(
+                        "No API key found. Please set it using `hnt ai --key <YOUR_API_KEY>`"
+                    );
                 } else {
-                    eprintln!("Error could not reach AI service. Check your internet connection and try again");
+                    eprintln!(
+                        "Error could not reach AI service. Check your internet connection and try again"
+                    );
                 }
                 return;
             }
@@ -21,13 +24,14 @@ pub async fn handle_prompt( key: Option<String>, prompt: Option<String>, full: b
         if full {
             println!("{}", serde_json::to_string_pretty(&res).unwrap());
         } else {
-            let output = if let Some(text) = res["candidates"][0]["content"]["parts"][0]["text"].as_str() {
-                text
-            } else if let Some(err) = res["error"]["message"].as_str() {
-                err
-            } else {
-                "No output found"
-            };
+            let output =
+                if let Some(text) = res["candidates"][0]["content"]["parts"][0]["text"].as_str() {
+                    text
+                } else if let Some(err) = res["error"]["message"].as_str() {
+                    err
+                } else {
+                    "No output found"
+                };
             println!("{}", output);
         }
     } else {

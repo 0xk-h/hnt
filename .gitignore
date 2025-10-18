@@ -30,7 +30,6 @@ Thumbs.db
 
 # Editor / IDE files
 myapp/
-.vscode/
 .idea/
 *.swp
 *.swo

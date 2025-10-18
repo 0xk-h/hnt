@@ -1,4 +1,4 @@
-use cliclack::{ input, confirm, select };
+use cliclack::{confirm, input, select};
 use std::path::Path;
 
 use super::fs_ops::check;
@@ -13,8 +13,7 @@ pub struct ProjectConfig {
     pub git_init: bool,
 }
 
-pub fn get_project_config(name:Option<String>, quick:bool, force:bool) -> ProjectConfig {
-
+pub fn get_project_config(name: Option<String>, quick: bool, force: bool) -> ProjectConfig {
     // 1. Project name
     let name = match name {
         Some(n) => n,
@@ -28,12 +27,11 @@ pub fn get_project_config(name:Option<String>, quick:bool, force:bool) -> Projec
         std::process::exit(1);
     }
 
-
     // 2. Project type
     let project_types = vec![
         ("Frontend", "Frontend", ""),
         ("Backend", "Backend", ""),
-        ("Fullstack", "Fullstack", "")
+        ("Fullstack", "Fullstack", ""),
     ];
     let project_type = select("Choose project type:")
         .items(&project_types)
@@ -46,14 +44,14 @@ pub fn get_project_config(name:Option<String>, quick:bool, force:bool) -> Projec
         let frontends = vec![
             ("react", "React", ""),
             ("nextjs", "NextJS", ""),
-            ("vanilla", "Vanilla", "HTML + CSS + JS")
+            ("vanilla", "Vanilla", "HTML + CSS + JS"),
         ];
         Some(
             select("Choose frontend framework:")
                 .items(&frontends)
                 .interact()
                 .unwrap()
-                .to_string()
+                .to_string(),
         )
     } else {
         None
@@ -65,14 +63,14 @@ pub fn get_project_config(name:Option<String>, quick:bool, force:bool) -> Projec
             ("Node.js (Express.js)", "Express.js", "Node.js"),
             ("Python (FastAPI)", "FastAPI", "Python"),
             ("Go (Gin)", "Gin", "Golang"),
-            ("Rust (Axum)", "Axum", "Rust")
+            ("Rust (Axum)", "Axum", "Rust"),
         ];
         Some(
             select("Choose backend framework:")
                 .items(&backends)
                 .interact()
                 .unwrap()
-                .to_string()
+                .to_string(),
         )
     } else {
         None
@@ -94,7 +92,11 @@ pub fn get_project_config(name:Option<String>, quick:bool, force:bool) -> Projec
                     .initial_value(false)
                     .interact()
                     .unwrap_or(false);
-                Some(if use_ts { String::from("express-ts") } else { String::from("express") })
+                Some(if use_ts {
+                    String::from("express-ts")
+                } else {
+                    String::from("express")
+                })
             }
         }
     } else {
@@ -110,7 +112,11 @@ pub fn get_project_config(name:Option<String>, quick:bool, force:bool) -> Projec
                 .initial_value(false)
                 .interact()
                 .unwrap_or(false);
-            Some(if use_ts { format!("{}-ts", ln) } else { ln.to_string() })
+            Some(if use_ts {
+                format!("{}-ts", ln)
+            } else {
+                ln.to_string()
+            })
         }
     } else {
         None

@@ -1,13 +1,13 @@
-use clap::{ Parser, ValueEnum };
+use clap::{Parser, ValueEnum};
+use heck::ToKebabCase;
 use std::env;
 use std::fmt::Debug;
 use std::path::Path;
-use heck::ToKebabCase;
 
-use crate::init;
-use crate::utils::config::HntConfig;
-use crate::init::fs_ops;
 use super::prompts::ProjectConfig;
+use crate::init;
+use crate::init::fs_ops;
+use crate::utils::config::HntConfig;
 
 #[derive(Debug, Parser)]
 pub struct InitArgs {
@@ -19,24 +19,23 @@ pub struct InitArgs {
 
     project_name: Option<String>,
 
-    #[arg( long )]
+    #[arg(long)]
     frontend: Option<FrontendLang>,
 
-    #[arg( long )]
+    #[arg(long)]
     backend: Option<BackendLang>,
 
-    #[arg( long )]
+    #[arg(long)]
     tailwind: bool,
 
-    #[arg( long )]
+    #[arg(long)]
     git: bool,
 
-    #[arg( long )]
+    #[arg(long)]
     shadcn: bool,
 
-    #[arg( short, long )]
+    #[arg(short, long)]
     force: bool,
-
     // #[arg( long="skip-install",default_value_t=true, action = clap::ArgAction::Set)]
     // skip_install: bool,
 }
@@ -62,20 +61,24 @@ enum BackendLang {
     Axum,
 }
 
-
 pub fn validate(args: &InitArgs) {
-
     println!("validating the prompt");
-    
+
     if args.frontend.is_none() && args.backend.is_none() && !args.yes {
-        init::wizard::wizard(args.quick , args.project_name.clone(), args.force);
+        init::wizard::wizard(args.quick, args.project_name.clone(), args.force);
         return;
     }
-    
+
     let cfg = HntConfig::load();
 
-    if cfg.init_defaults.frontend.is_none() && cfg.init_defaults.backend.is_none() && args.frontend.is_none() && args.backend.is_none() {
-        eprintln!("Missing both frontend and backend — Run `hnt config` to set defaults or remove --yes for interactive setup.");
+    if cfg.init_defaults.frontend.is_none()
+        && cfg.init_defaults.backend.is_none()
+        && args.frontend.is_none()
+        && args.backend.is_none()
+    {
+        eprintln!(
+            "Missing both frontend and backend — Run `hnt config` to set defaults or remove --yes for interactive setup."
+        );
         return;
     }
 
@@ -102,23 +105,21 @@ pub fn validate(args: &InitArgs) {
     println!("Creating project with config: {:?}", cfg);
 
     init::scaffold::scaffold(cfg);
-
 }
 
-fn to_project_config(cfg: &HntConfig, args: &InitArgs, name: String ) -> ProjectConfig {
+fn to_project_config(cfg: &HntConfig, args: &InitArgs, name: String) -> ProjectConfig {
+    let frontend: Option<String> =
+        enum_to_kebab(&args.frontend).or(cfg.init_defaults.frontend.clone());
 
-    let frontend: Option<String> = enum_to_kebab(&args.frontend)
-        .or(cfg.init_defaults.frontend.clone());
-
-    let backend: Option<String> = enum_to_kebab(&args.backend)
-        .or(cfg.init_defaults.backend.clone());
+    let backend: Option<String> =
+        enum_to_kebab(&args.backend).or(cfg.init_defaults.backend.clone());
 
     // Determine project type
     let project_type = match (&frontend, &backend) {
         (Some(_), Some(_)) => "Fullstack".to_string(),
         (Some(_), None) => "Frontend".to_string(),
         (None, Some(_)) => "Backend".to_string(),
-        _ => "Unknown".to_string()
+        _ => "Unknown".to_string(),
     };
 
     init::prompts::ProjectConfig {

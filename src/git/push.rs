@@ -1,26 +1,25 @@
 use crate::ai::commit::commit_msg;
-use std::process::{Command, Stdio};
-use cliclack::{ select, input };
+use cliclack::{input, select};
 use colored::*;
+use std::process::{Command, Stdio};
 
 pub async fn push(inputs: &[String], set_upstream: bool, ai: bool, dry_run: bool) {
-
     if set_upstream && inputs.len() != 2 {
         eprintln!("Error: -u requires exactly 2 arguments: <msg> <branch>");
         return;
     }
 
     if dry_run {
-        println!("{}","Dry run mode enabled.".bold().cyan());
+        println!("{}", "Dry run mode enabled.".bold().cyan());
     }
 
     run_git(&["add", "."]);
 
     let msg = if ai {
-        let generated:Option<String> = commit_msg().await;
+        let generated: Option<String> = commit_msg().await;
         if let Some(msg) = &generated {
             let mut commits: Vec<String> = match serde_json::from_str(&msg) {
-                Ok( c) => c,
+                Ok(c) => c,
                 Err(err) => {
                     eprintln!("Failed to parse JSON: {}", err);
                     return;
@@ -51,14 +50,14 @@ pub async fn push(inputs: &[String], set_upstream: bool, ai: bool, dry_run: bool
             let final_choice = if choice == "Custom" {
                 input("Enter your custom commit message:")
                     .interact()
-                    .unwrap_or_else(|err|{
-                        eprintln!("{}",format!("Failed to read input {}",err).red());
+                    .unwrap_or_else(|err| {
+                        eprintln!("{}", format!("Failed to read input {}", err).red());
                         std::process::exit(1);
                     })
             } else {
                 choice
             };
-        
+
             final_choice
         } else {
             return;
@@ -71,7 +70,10 @@ pub async fn push(inputs: &[String], set_upstream: bool, ai: bool, dry_run: bool
             inputs[0].clone()
         }
     };
-    println!("{}",format!("Using commit message - \"{}\"", &msg).yellow());
+    println!(
+        "{}",
+        format!("Using commit message - \"{}\"", &msg).yellow()
+    );
 
     if dry_run {
         return;
@@ -79,14 +81,17 @@ pub async fn push(inputs: &[String], set_upstream: bool, ai: bool, dry_run: bool
 
     run_git(&["commit", "-m", &msg]);
 
-    let branch = if inputs.len() >= 2 { inputs[1].as_str() } else { "HEAD" };
+    let branch = if inputs.len() >= 2 {
+        inputs[1].as_str()
+    } else {
+        "HEAD"
+    };
     if set_upstream {
         run_git(&["push", "--set-upstream", "origin", &branch]);
     } else {
         run_git(&["push", "origin", &branch]);
     }
 }
-
 
 fn run_git(args: &[&str]) {
     Command::new("git")

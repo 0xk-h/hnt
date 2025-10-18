@@ -1,6 +1,9 @@
 use std::{
     io::{self, Write},
-    sync::{Arc, atomic::{AtomicBool, Ordering}},
+    sync::{
+        Arc,
+        atomic::{AtomicBool, Ordering},
+    },
     thread,
     time::Duration,
 };
@@ -23,7 +26,7 @@ impl Loader {
             while !flag.load(Ordering::Relaxed) {
                 let mut bar = vec![' '; width];
                 bar[pos] = '=';
-                bar[pos+1] = '=';
+                bar[pos + 1] = '=';
                 print!("\r[{}]", bar.iter().collect::<String>());
                 io::stdout().flush().unwrap();
 
@@ -43,7 +46,10 @@ impl Loader {
             println!("\r[{}] Done!", "=".repeat(width));
         });
 
-        Loader { is_done, handle: Some(handle) }
+        Loader {
+            is_done,
+            handle: Some(handle),
+        }
     }
 
     pub fn stop(mut self) {

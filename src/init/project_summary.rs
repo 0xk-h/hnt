@@ -2,7 +2,6 @@ use crate::init::prompts::ProjectConfig;
 
 // Only for debugging
 pub fn print_project_summary(config: &ProjectConfig) {
-
     println!("\n✅ Project configuration:");
     println!("  Project name: {}", config.name);
     println!("  Project type: {}", config.project_type);
@@ -22,8 +21,6 @@ pub fn print_project_summary(config: &ProjectConfig) {
 
     // Git
     println!("  Initialize Git repo: {}", config.git_init);
-
-
 }
 
 pub fn print_next_steps(name: &str) {
