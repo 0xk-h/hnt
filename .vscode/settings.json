@@ -1,0 +1,65 @@
+{
+  // ------------------------------
+  // UI / Editor settings
+  // ------------------------------
+  "editor.fontFamily": "JetBrains Mono",
+  "window.zoomLevel": 1,
+  "liveServer.settings.donotShowInfoMsg": true,
+  "workbench.iconTheme": "material-icon-theme",
+  "css.validate": false,
+  "scss.validate": false,
+  "less.validate": false,
+  "editor.quickSuggestions": { "strings": true },
+  "tailwindCSS.emmetCompletions": true,
+  "jdk.telemetry.enabled": false,
+  "explorer.confirmDelete": true,
+
+  // ------------------------------
+  // Default formatting
+  // ------------------------------
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "editor.insertSpaces": true,
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+
+  // ------------------------------
+  // JavaScript / TypeScript / JSX / TSX / JSON
+  // ------------------------------
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.tabSize": 2
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.tabSize": 2
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.tabSize": 2
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.tabSize": 2
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.tabSize": 2
+  },
+
+  // ------------------------------
+  // Rust settings
+  // ------------------------------
+  "[rust]": {
+    "editor.defaultFormatter": "rust-lang.rust-analyzer",
+    "editor.tabSize": 4
+  },
+
+  // ------------------------------
+  // Template file handling
+  // ------------------------------
+  "typescript.validate.enable": false,
+  "javascript.validate.enable": false,
+  "json.validate.enable": false
+  "typescript.tsserver.experimental.enableProjectDiagnostics": false,
+}
