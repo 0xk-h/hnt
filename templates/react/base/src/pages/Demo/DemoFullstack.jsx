@@ -22,7 +22,9 @@ const Demo = () => {
         <div className="welcome-card">
           <h2>Frontend & Backend Connected</h2>
           <p>Your backend is running successfully! Here's what it says:</p>
-          <div className="highlight-box">{message}</div>
+          <div className="highlight-box">
+            <span className="typewriter long">{message}</span>
+          </div>
           <p className="api-note">
             (Fetched dynamically from your backend API at{" "}
             <code>/api/message</code>)

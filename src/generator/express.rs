@@ -16,9 +16,9 @@ pub fn create(config: &ProjectConfig) -> std::io::Result<()> {
         std::process::exit(1);
     }
 
-    if let Some(frontend) = &config.frontend {
-        if frontend != "react" && frontend != "react-ts" {
-            eprintln!("Unsupported frontend framework");
+    if let Some(backend) = &config.backend {
+        if backend != "express" && backend != "express-ts" {
+            eprintln!("Unsupported backend framework");
             std::process::exit(1);
         }
     }
@@ -29,7 +29,7 @@ pub fn create(config: &ProjectConfig) -> std::io::Result<()> {
         PathBuf::from(&config.name)
     };
     if &config.project_type == "Fullstack" {
-        path.push("frontend");
+        path.push("backend");
     }
     if !path.exists() {
         fs::create_dir_all(&path)?;
@@ -38,49 +38,31 @@ pub fn create(config: &ProjectConfig) -> std::io::Result<()> {
     
     let mut end = String::from("");
     let mut src = String::from("");
-
-    if let Some(frontend) = &config.frontend {
-        if frontend == "react"  {
-            src.push_str("react");
-            end.push_str("jsx");
-        } else if frontend == "react-ts" {
-            src.push_str("react-ts");
-            end.push_str("tsx");
-        }
-    }
     
-    if config.use_tailwind{
-        if src.is_empty() {
-            return Err(std::io::Error::new(std::io::ErrorKind::Other, "No frontend specified"));
+    if let Some(backend) = &config.backend {
+        if backend == "express"  {
+            src.push_str("express");
+            end.push_str("js");
+        } else if backend == "express-ts" {
+            src.push_str("express-ts");
+            end.push_str("ts");
         }
-        src.push_str("/tailwind");
-    } else {
-        src.push_str("/base");
     }
     
     let name: String = get_name(&config.name);
 
-    let index_replacements: HashMap<&str, &str> = HashMap::from([
+    let package_replacements: HashMap<&str, &str> = HashMap::from([
         ("{{NAME}}", name.as_str())
     ]);
 
     let mut replacements = HashMap::new();
-    replacements.insert(String::from("index.html"), index_replacements);
+    replacements.insert(String::from("package.json"), package_replacements);
 
-    let mut skip: HashSet<String> = HashSet::from([String::from(".gitkeep")]);
-    if config.project_type != "Fullstack" {
-        skip.insert(format!("message.{}", &end[..2]));
-        skip.insert(format!("DemoFullstack.{}", &end));
-    } else {
-        skip.insert(format!("DemoFrontendOnly.{}", &end));
-    }
+    let skip: HashSet<String> = HashSet::from([String::from(".gitkeep")]);
 
     let mut rename = HashMap::new();
-    if config.project_type != "Fullstack"{
-        rename.insert(format!("DemoFrontendOnly.{}", &end), format!("Demo.{}", &end));
-    } else {
-        rename.insert(format!("DemoFullstack.{}", &end), format!("Demo.{}", &end));
-    }
+
+    rename.insert(String::from("_gitignore"), String::from(".gitignore"));
 
     print!("Using template: {}\n", src);
     println!("replacements: {:?}\n skip: {:?}\n rename: {:?}", replacements, skip, rename);

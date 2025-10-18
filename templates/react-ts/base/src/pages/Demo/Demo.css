@@ -54,6 +54,48 @@
   font-family: monospace;
   font-size: 0.875rem;
   color: #22c55e;
+  overflow: hidden;
+}
+
+.typewriter {
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  border-right: 2px solid #22c55e;
+}
+
+.long {
+  width: 41ch;
+  animation: typing-long 3s steps(41, end), blink 0.7s infinite;
+}
+
+.mini {
+  width: 12ch;
+  animation: typing-mini 1.5s steps(12, end), blink 0.7s infinite;
+}
+
+@keyframes typing-mini {
+  from {
+    width: 0ch;
+  }
+  to {
+    width: 12ch;
+  }
+}
+
+@keyframes typing-long {
+  from {
+    width: 0ch;
+  }
+  to {
+    width: 41ch;
+  }
+}
+
+@keyframes blink {
+  50% {
+    border-color: transparent;
+  }
 }
 
 .api-note {

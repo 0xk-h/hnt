@@ -48,7 +48,6 @@ enum FrontendLang {
     ReactTs,
     Nextjs,
     NextjsTs,
-    Svelte,
     Vanilla,
     VanillaTs,
 }

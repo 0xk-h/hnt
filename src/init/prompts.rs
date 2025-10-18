@@ -45,9 +45,8 @@ pub fn get_project_config(name:Option<String>, quick:bool, force:bool) -> Projec
     let frontend = if project_type == "Frontend" || project_type == "Fullstack" {
         let frontends = vec![
             ("react", "React", ""),
-            ("next.js", "Next.js", ""),
-            ("vanilla", "Vanilla", "HTML + CSS + JS"),
-            ("svelte", "Svelte", "")
+            ("nextjs", "NextJS", ""),
+            ("vanilla", "Vanilla", "HTML + CSS + JS")
         ];
         Some(
             select("Choose frontend framework:")

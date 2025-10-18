@@ -15,7 +15,9 @@ const Demo: React.FC = () => {
             Your React frontend is ready. Start building your application by
             editing the entry file below.
           </p>
-          <div className="highlight-box">src/App.tsx</div>
+          <div className="highlight-box">
+            <span className="typewriter mini">src/App.tsx</span>
+          </div>
         </div>
 
         <div className="card-grid">
