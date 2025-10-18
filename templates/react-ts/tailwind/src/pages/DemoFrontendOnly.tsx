@@ -16,8 +16,8 @@ const Demo: React.FC = () => {
             Your React frontend is ready. Start building your application by
             editing the entry file below.
           </p>
-          <div className="bg-[#0f172a] px-4 py-3 rounded-lg font-mono text-sm text-green-400">
-            src/App.tsx
+          <div className="bg-[#0f172a] flex items-center px-4 py-3 rounded-lg font-mono text-sm text-green-400">
+            <span className="typewriter mini">src/App.tsx</span>
           </div>
         </div>
 

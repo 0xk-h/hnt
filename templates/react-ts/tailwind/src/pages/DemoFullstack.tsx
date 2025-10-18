@@ -25,8 +25,8 @@ const Demo: React.FC = () => {
           <p className="text-slate-400 mb-4">
             Your backend is running successfully! Here's what it says:
           </p>
-          <div className="bg-[#0f172a] px-4 py-3 rounded-lg font-mono text-sm text-green-400 border border-slate-700 shadow-md">
-            {message}
+          <div className="bg-[#0f172a] flex items-center px-4 py-3 rounded-lg font-mono text-sm text-green-400 border border-slate-700 shadow-md">
+            <span className="typewriter long">{message}</span>
           </div>
           <p className="text-slate-500 text-xs mt-3 italic">
             (Fetched dynamically from your backend API at{" "}
