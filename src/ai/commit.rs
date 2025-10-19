@@ -71,5 +71,9 @@ pub async fn commit_msg() -> Option<String> {
         return None;
     };
 
-    Some(output.to_string())
+    let start = output.find('[').unwrap_or(0);
+    let end = output.rfind(']').unwrap_or(output.len() - 1);
+    let json_str = &output[start..=end];
+
+    Some(json_str.to_string())
 }
