@@ -63,7 +63,7 @@ fn is_empty(dir: &Path) -> bool {
 pub fn copy(
     src: &str,
     dest: &Path,
-    file_replacements: &HashMap<String, HashMap<&str, &str>>,
+    file_replacements: &HashMap<String, &HashMap<&str, &str>>,
     skip: &HashSet<String>,
     rename: &HashMap<String, String>,
 ) -> io::Result<()> {

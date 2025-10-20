@@ -1,7 +1,7 @@
 package router
 
 import (
-	"GIN-SERVER/internal/handlers"
+	"{{NAME}}/internal/handlers"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"

@@ -53,7 +53,7 @@ pub fn create(config: &ProjectConfig) -> std::io::Result<()> {
     let package_replacements: HashMap<&str, &str> = HashMap::from([("{{NAME}}", name.as_str())]);
 
     let mut replacements = HashMap::new();
-    replacements.insert(String::from("package.json"), package_replacements);
+    replacements.insert(String::from("package.json"), &package_replacements);
 
     let skip: HashSet<String> = HashSet::from([String::from(".gitkeep")]);
 

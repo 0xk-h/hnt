@@ -11,13 +11,13 @@ use crate::init::prompts::ProjectConfig;
 use crate::utils::pkg_manager::detect_package_manager;
 
 pub fn create(config: &ProjectConfig) -> std::io::Result<()> {
-    if !(detect_package_manager("pip")) {
-        eprintln!("pip is not installed. Please install pip to proceed.");
+    if !(detect_package_manager("go")) {
+        eprintln!("go is not installed. Please install go to proceed.");
         std::process::exit(1);
     }
 
     if let Some(backend) = &config.backend {
-        if backend != "fastapi" {
+        if backend != "gin" {
             eprintln!("Unsupported backend framework");
             std::process::exit(1);
         }
@@ -35,14 +35,16 @@ pub fn create(config: &ProjectConfig) -> std::io::Result<()> {
         fs::create_dir_all(&path)?;
     }
 
-    let src = String::from("fastapi");
+    let src = String::from("gin");
 
     let name: String = get_name(&config.name);
 
-    let main_replacements: HashMap<&str, &str> = HashMap::from([("{{NAME}}", name.as_str())]);
+    let name_replacements: HashMap<&str, &str> = HashMap::from([("{{NAME}}", name.as_str())]);
 
     let mut replacements = HashMap::new();
-    replacements.insert(String::from("main.py"), &main_replacements);
+    replacements.insert(String::from("go.mod"), &name_replacements);
+    replacements.insert(String::from("router.go"), &name_replacements);
+    replacements.insert(String::from("main.go"), &name_replacements);
 
     let skip: HashSet<String> = HashSet::from([String::from(".gitkeep")]);
 

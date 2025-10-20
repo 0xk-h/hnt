@@ -1,6 +1,6 @@
 package main
 
-import "GIN-SERVER/internal/router"
+import "{{NAME}}/internal/router"
 
 func main() {
 	r := router.SetupRouter()

@@ -1,4 +1,4 @@
-module GIN-SERVER
+module {{NAME}}
 
 go 1.25.3
 
