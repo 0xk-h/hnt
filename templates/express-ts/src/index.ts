@@ -6,7 +6,7 @@ import messageRouter from "./routes/message.ts";
 dotenv.config();
 
 const app: Application = express();
-const PORT: string | number = process.env.PORT || 5000;
+const PORT: string | number = process.env.PORT || 8000;
 
 app.use(cors());
 app.use(express.json());
