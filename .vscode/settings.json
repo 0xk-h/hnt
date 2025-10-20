@@ -56,10 +56,26 @@
   },
 
   // ------------------------------
+  // Go settings
+  // ------------------------------
+  "gopls": {
+      "analyses": {
+          "unusedparams": false,
+          "unusedwrite": false,
+          "shadow": false
+      },
+      "staticcheck": false
+    },
+    "[go]": {
+    "editor.codeLens": false
+  },
+
+  // ------------------------------
   // Template file handling
   // ------------------------------
   "typescript.validate.enable": false,
   "javascript.validate.enable": false,
   "json.validate.enable": false
   "typescript.tsserver.experimental.enableProjectDiagnostics": false,
+
 }
