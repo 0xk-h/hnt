@@ -66,9 +66,6 @@
       },
       "staticcheck": false
     },
-    "[go]": {
-    "editor.codeLens": false
-  },
 
   // ------------------------------
   // Template file handling
