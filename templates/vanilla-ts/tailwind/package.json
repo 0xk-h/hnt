@@ -1,0 +1,20 @@
+{
+  "name": "{{NAME}}",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"npx @tailwindcss/cli -i ./style.css -o ./dist/output.css --watch\" \"npx tsc --watch\"",
+    "build": "npx @tailwindcss/cli -i ./style.css -o ./dist/output.css && npx tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.1.15",
+    "concurrently": "^9.2.1",
+    "tailwindcss": "^4.1.15",
+    "typescript": "^5.9.3"
+  }
+}

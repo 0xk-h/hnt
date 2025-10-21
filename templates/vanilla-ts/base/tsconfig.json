@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    /* File Layout */
+    "rootDir": "./src",
+    "outDir": "./dist",
+
+    /* Environment (for browser JS) */
+    "target": "esnext",
+    "module": "esnext",
+    "lib": ["esnext", "dom"],
+
+    /* Source maps & declarations (optional but useful) */
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+
+    /* Type checking */
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+
+    /* Style preferences */
+    // "noImplicitReturns": true,
+    // "noUnusedLocals": true,
+    // "noUnusedParameters": true,
+
+    /* Performance & compatibility */
+    "skipLibCheck": true,
+    "isolatedModules": true
+  },
+  "include": ["src"]
+}
