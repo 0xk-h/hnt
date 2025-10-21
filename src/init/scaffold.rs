@@ -6,6 +6,7 @@ pub fn scaffold(config: ProjectConfig) {
     if let Some(frontend) = &config.frontend {
         let res = match frontend.as_str() {
             "react" | "react-ts" => generator::react::create(&config),
+            "vanilla" | "vanilla-ts" => generator::vanilla::create(&config),
             _ => {
                 println!("Frontend template '{}' is not yet supported.", frontend);
                 std::process::exit(1);
