@@ -62,10 +62,11 @@ pub fn create(config: &ProjectConfig) -> std::io::Result<()> {
 
     let name: String = get_name(&config.name);
 
-    let index_replacements: HashMap<&str, &str> = HashMap::from([("{{NAME}}", name.as_str())]);
+    let name_replacements: HashMap<&str, &str> = HashMap::from([("{{NAME}}", name.as_str())]);
 
     let mut replacements = HashMap::new();
-    replacements.insert(String::from("index.html"), &index_replacements);
+    replacements.insert(String::from("index.html"), &name_replacements);
+    replacements.insert(String::from("package.json"), &name_replacements);
 
     let mut skip: HashSet<String> = HashSet::from([String::from(".gitkeep")]);
     if config.project_type != "Fullstack" {
