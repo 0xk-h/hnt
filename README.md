@@ -69,10 +69,28 @@ $ hnt push -A
 
 ```bash
 ◇  Pick a commit message:
-│  docs: add README with project description and setup instructions
+│  docs: add README with project description
 │
 └
-Using commit message - "docs: add README with project description and setup instructions"
+Using commit message - "docs: add README with project description"
+```
+
+AI assisted commit with custom commit msg
+
+```bash
+$ hnt push -A
+◇  Pick a commit message:
+│  Custom
+│
+│  ○ feat: add initial README for HNT CLI tool
+│  ○ docs: create README with features, usage, and tech stack
+│  ○ chore: create initial README file
+│  ○ docs: add README with project description and setup instructions
+│  ○ feat: introduce HNT CLI tool with README documentation
+│  ● Custom
+◆  Enter your custom commit message:
+│  █
+└
 ```
 
 ### AI Prompt
@@ -346,7 +364,7 @@ Dynamically generate ready-to-run projects with backend/frontend wiring included
 
 Created by — Kishore Kumar J
 
-GitHub: [https://github.com/0xk-h](https://github.com/oxk-h)
+GitHub: [https://github.com/0xk-h](https://github.com/0xk-h)
 
 LinkedIn: [https://www.linkedin.com/in/Kishore](https://www.linkedin.com/in/kishore-kumar-547a79329/)
 
