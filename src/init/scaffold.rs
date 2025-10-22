@@ -23,6 +23,7 @@ pub fn scaffold(config: ProjectConfig) {
             "express" | "express-ts" => generator::express::create(&config),
             "fastapi" => generator::fastapi::create(&config),
             "gin" => generator::gin::create(&config),
+            "axum" => generator::axum::create(&config),
             _ => {
                 println!("Frontend template '{}' is not yet supported.", backend);
                 std::process::exit(1);
