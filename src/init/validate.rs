@@ -45,8 +45,6 @@ pub struct InitArgs {
 enum FrontendLang {
     React,
     ReactTs,
-    Nextjs,
-    NextjsTs,
     Vanilla,
     VanillaTs,
 }
