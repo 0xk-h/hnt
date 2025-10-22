@@ -25,12 +25,12 @@ pub fn scaffold(config: ProjectConfig) {
             "gin" => generator::gin::create(&config),
             "axum" => generator::axum::create(&config),
             _ => {
-                println!("Frontend template '{}' is not yet supported.", backend);
+                println!("Backend template '{}' is not yet supported.", backend);
                 std::process::exit(1);
             }
         };
         if let Err(e) = res {
-            eprintln!("Failed to scaffold frontend '{}': {}", backend.as_str(), e);
+            eprintln!("Failed to scaffold backend '{}': {}", backend.as_str(), e);
             return;
         }
     }
