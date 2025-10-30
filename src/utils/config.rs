@@ -3,6 +3,8 @@ use serde::{Deserialize, Serialize};
 use std::fs;
 use std::path::PathBuf;
 
+use crate::init::prompts::ProjectConfig;
+
 #[derive(Serialize, Deserialize, Debug)]
 pub struct HntConfig {
     pub api: ApiConfig,
@@ -71,7 +73,7 @@ impl HntConfig {
     }
 
     // Save config toml
-    fn save(&self) {
+    pub fn save(&self) {
         let path = Self::config_path();
         fs::create_dir_all(path.parent().unwrap()).expect("Failed to create .hnt directory");
         let toml = toml::to_string(self).expect("Failed to serialize config");
@@ -91,7 +93,7 @@ impl HntConfig {
         return home.join(".hnt/config.toml");
     }
 
-    //default HntConfig
+    // Default HntConfig
     pub fn default_config() -> Self {
         HntConfig {
             api: ApiConfig {
@@ -104,5 +106,25 @@ impl HntConfig {
                 git_init: true,
             },
         }
+    }
+
+    // Update init defaults
+    pub fn update_init_defaults(cfg: &ProjectConfig) {
+        let mut current = Self::load();
+
+        current.init_defaults = InitDefaults {
+            frontend: match &cfg.frontend {
+                Some(f) => Some(f.clone()),
+                None => current.init_defaults.frontend,
+            },
+            backend: match &cfg.backend {
+                Some(b) => Some(b.clone()),
+                None => current.init_defaults.backend,
+            },
+            use_tailwind: cfg.use_tailwind,
+            git_init: cfg.git_init,
+        };
+
+        current.save();
     }
 }

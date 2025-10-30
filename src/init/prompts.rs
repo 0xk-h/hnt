@@ -13,19 +13,29 @@ pub struct ProjectConfig {
     pub git_init: bool,
 }
 
-pub fn get_project_config(name: Option<String>, quick: bool, force: bool) -> ProjectConfig {
+pub fn get_project_config(
+    name: Option<String>,
+    quick: bool,
+    force: bool,
+    skip_name: bool,
+) -> ProjectConfig {
     // 1. Project name
-    let name = match name {
-        Some(n) => n,
-        None => input("Enter project name:")
-            .placeholder("my-project")
-            .interact()
-            .unwrap_or_else(|_| String::from("my-project")),
+    let name = if skip_name {
+        String::from("")
+    } else {
+        let n = match name {
+            Some(n) => n,
+            None => input("Enter project name:")
+                .placeholder("my-project")
+                .interact()
+                .unwrap_or_else(|_| String::from("my-project")),
+        };
+        let path = Path::new(&n);
+        if !check(path, if force { Some(true) } else { None }) {
+            std::process::exit(1);
+        }
+        n
     };
-    let path = Path::new(&name);
-    if !check(path, if force { Some(true) } else { None }) {
-        std::process::exit(1);
-    }
 
     // 2. Project type
     let project_types = vec![
@@ -142,22 +152,6 @@ pub fn get_project_config(name: Option<String>, quick: bool, force: bool) -> Pro
             .interact()
             .unwrap_or(true)
     };
-
-    // // 9. shadcnUI  (only for React/Next + Tailwind)
-    // let use_shadcn = if quick {
-    //     true
-    // } else if let Some(ref ln) = frontend {
-    //     if (ln == "React" || ln == "Next.js") && use_tailwind {
-    //         confirm("Use shadcn/ui component library?")
-    //             .initial_value(true)
-    //             .interact()
-    //             .unwrap_or(true)
-    //     } else {
-    //         false
-    //     }
-    // } else {
-    //     false
-    // };
 
     ProjectConfig {
         name,

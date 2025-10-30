@@ -7,6 +7,7 @@ mod generator;
 mod git;
 mod init;
 mod utils;
+use init::save_config::ConfigOptions;
 
 #[tokio::main]
 async fn main() {
@@ -56,7 +57,11 @@ async fn main() {
 
         //scaffold new project
         Init(init::validate::InitArgs),
+
         //Config {}
+        Config {
+            option: Option<ConfigOptions>,
+        },
     }
 
     let cli = Cli::parse();
@@ -78,6 +83,15 @@ async fn main() {
         }
         Commands::Init(init_args) => {
             init::validate::validate(&init_args);
-        } //_ => println!("Command not recognized. Please enter a valid command"),
+        }
+        Commands::Config { option } => match option {
+            Some(opt) => {
+                init::save_config::setup_default_config(opt);
+            }
+            None => {
+                println!("No config option provided. Use --help for more information.");
+            }
+        },
+        // _ => println!("Command not recognized. Please enter a valid command"),
     }
 }

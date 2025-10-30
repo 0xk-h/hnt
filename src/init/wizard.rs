@@ -12,12 +12,12 @@ pub fn wizard(skip: bool, project_name: Option<String>, force: bool) {
         Some(name) => {
             let name = name.trim();
             if name.is_empty() {
-                get_project_config(None, skip, force)
+                get_project_config(None, skip, force, false)
             } else {
-                get_project_config(Some(name.to_string()), skip, force)
+                get_project_config(Some(name.to_string()), skip, force, false)
             }
         }
-        None => get_project_config(None, skip, force),
+        None => get_project_config(None, skip, force, false),
     };
 
     let _ = outro("Scaffolding project...".green());
