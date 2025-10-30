@@ -1,4 +1,4 @@
-use super::project_summary::{print_next_steps, print_project_summary};
+use super::project_summary::print_next_steps;
 use super::prompts::ProjectConfig;
 use crate::generator;
 
@@ -34,8 +34,6 @@ pub fn scaffold(config: ProjectConfig) {
             return;
         }
     }
-
-    print_project_summary(&config);
 
     print_next_steps(&config.name);
 }
