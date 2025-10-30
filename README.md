@@ -1,10 +1,6 @@
 # HNT — Developer Productivity CLI
 
-HNT is a **Rust-based CLI tool** that boosts developer productivity by providing modular tools for git automation, terminal games, and AI integration — all within a **fast, interactive, multi-threaded terminal interface**.
-
-> Includes: multi-threaded module loader, AI-assisted commit messages, interactive terminal UI, and customizable CLI scaffolds.
-
----
+HNT is a Rust-based Command-Line Interface (CLI) tool that boosts developer productivity by providing modular utilities for **Git automation**, interactive **terminal games**, and **AI integration** — all within a fast, multi-threaded terminal interface. It offers an interactive user interface for selecting options and a set of self-contained commands to streamline common development workflows.
 
 ## Table of Contents
 
@@ -161,13 +157,13 @@ $ hnt init myapp -y
 
 ## Features
 
-- **Multi-threaded Module Loader** — Fast startup for multiple modules using Rust async (`tokio`).
-- **Interactive CLI UI** — Arrow-key navigation, selection, and smooth terminal UX.
-- **Git Automation** — AI-assisted commit messages, filtering, dry-run support, upstream configuration.
-- **Games Module** — Terminal games like "Guess" for fun or practice.
-- **AI Integration** — Run prompts directly from the CLI, choose pretty or concise output formats.
-- **Customizable Scaffold** — Dynamically generate fullstack, frontend-only or backend-only projects, ready-to-run and pre-wired for seamless integration.
-- **Extensible** — Modular architecture allows easy addition of new CLI commands.
+- **Multi-threaded Startup:** Fast module loading using Rust’s asynchronous Tokio runtime, ensuring quick startup even with multiple tools.
+- **Interactive Terminal UI:** Visually appealing menus and prompts with arrow-key navigation, thanks to the Cliclack library, for a smooth CLI experience.
+- **Git Automation:** Automate common Git tasks, such as commit, push, setting upstream, and generating commit messages with AI assistance.
+- **AI Integration:** Query an AI assistant (using Google Gemini) directly from the terminal; supports full or concise output and easy API key management.
+- **Interactive Games:** Built-in terminal games (like a number Guessing Game) for fun or practice without leaving the CLI.
+- **Project Scaffolding:** Generate boilerplate for new projects (frontend, backend, or full-stack) using predefined templates (React, Express, FastAPI, Axum, etc.) via an interactive wizard or command-line flags.
+- **Configurable and Extensible:** A configuration file (`~/.hnt/config.toml`) stores defaults (e.g., AI key, scaffold preferences). The modular architecture allows adding new commands or plugins easily.
 
 ---
 
