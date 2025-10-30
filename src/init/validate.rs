@@ -31,13 +31,8 @@ pub struct InitArgs {
     #[arg(long)]
     git: bool,
 
-    #[arg(long)]
-    shadcn: bool,
-
     #[arg(short, long)]
     force: bool,
-    // #[arg( long="skip-install",default_value_t=true, action = clap::ArgAction::Set)]
-    // skip_install: bool,
 }
 
 #[derive(Clone, Debug, ValueEnum)]
