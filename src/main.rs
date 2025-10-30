@@ -7,7 +7,7 @@ mod generator;
 mod git;
 mod init;
 mod utils;
-use init::save_config::ConfigOptions;
+use utils::config_ops::ConfigOptions;
 
 #[tokio::main]
 async fn main() {
@@ -86,7 +86,7 @@ async fn main() {
         }
         Commands::Config { option } => match option {
             Some(opt) => {
-                init::save_config::setup_default_config(opt);
+                utils::config_ops::setup_default_config(opt);
             }
             None => {
                 println!("No config option provided. Use --help for more information.");
