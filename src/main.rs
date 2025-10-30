@@ -34,12 +34,13 @@ async fn main() {
             #[arg(short = 'u', long = "set-upstream", default_value_t = false)]
             set_upstream: bool,
 
-            #[arg(short = 'A', long, default_value_t = false)]
+            #[arg(short = 'A', long = "ai", default_value_t = false)]
             ai: bool,
 
             #[arg(short = 'n', long = "dry-run", default_value_t = false)]
             dry_run: bool,
 
+            // For commit msg and branch name
             #[arg(trailing_var_arg = true)]
             input: Vec<String>,
         },
@@ -51,7 +52,7 @@ async fn main() {
             #[arg(group = "ai")]
             prompt: Option<String>,
 
-            #[arg(short, long, requires = "prompt", default_value_t = false)]
+            #[arg(long, requires = "prompt", default_value_t = false)]
             full: bool,
         },
 
