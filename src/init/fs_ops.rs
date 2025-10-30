@@ -78,29 +78,29 @@ pub fn copy(
         let mut path = dest.join(file.path().strip_prefix(src).unwrap());
 
         if let Some(parent) = path.parent() {
-            println!(
-                "{}",
-                format!("Creating directory: {}", parent.display())
-                    .bold()
-                    .red()
-            );
+            // println!(
+            //     "{}",
+            //     format!("Creating directory: {}", parent.display())
+            //         .bold()
+            //         .red()
+            // );
             fs::create_dir_all(parent)?;
         }
 
         if let Some(file_name) = path.file_name().and_then(|x| x.to_str()) {
             if skip.contains(file_name) {
-                println!("Skipping {}", file_name);
+                // println!("Skipping {}", file_name);
             } else if let Some(replacements) = file_replacements.get(file_name) {
                 copy_with_replacement(&path, file.contents(), replacements)?;
             } else {
                 if let Some(new_name) = rename.get(file_name) {
-                    println!("Renaming {} to {}", file_name, new_name);
+                    // println!("Renaming {} to {}", file_name, new_name);
                     path.set_file_name(new_name);
                 }
-                println!(
-                    "{}",
-                    format!("Creating file: {}", path.display()).bold().yellow()
-                );
+                // println!(
+                //     "{}",
+                //     format!("Creating file: {}", path.display()).bold().yellow()
+                // );
                 let mut out_file = File::create(path)?;
                 out_file.write_all(file.contents())?;
             }
@@ -134,12 +134,12 @@ fn copy_with_replacement(
         result = result.replace(from, to);
     }
 
-    println!(
-        "{}",
-        format!("Creating file with replacements: {}", path.display())
-            .bold()
-            .blue()
-    );
+    // println!(
+    //     "{}",
+    //     format!("Creating file with replacements: {}", path.display())
+    //         .bold()
+    //         .blue()
+    // );
     let mut out_file = File::create(path)?;
     out_file.write_all(result.as_bytes())?;
 

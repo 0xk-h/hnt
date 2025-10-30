@@ -5,7 +5,7 @@ use std::process::{Command, Stdio};
 
 pub async fn push(inputs: &[String], set_upstream: bool, ai: bool, dry_run: bool) {
     if set_upstream && inputs.len() != 1 {
-        eprintln!("Error: -u requires a arguments: <branch>");
+        eprintln!("Error: Missing branch name for '-u' (usage: -u <branch>)");
         return;
     }
 

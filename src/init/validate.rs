@@ -60,8 +60,6 @@ enum BackendLang {
 }
 
 pub fn validate(args: &InitArgs) {
-    println!("validating the prompt");
-
     if args.frontend.is_none() && args.backend.is_none() && !args.yes {
         init::wizard::wizard(args.quick, args.project_name.clone(), args.force);
         return;
@@ -75,7 +73,7 @@ pub fn validate(args: &InitArgs) {
         && args.backend.is_none()
     {
         eprintln!(
-            "Missing both frontend and backend — Run `hnt config` to set defaults or remove --yes for interactive setup."
+            "Missing both frontend and backend — Run `hnt config set` to set defaults or remove --yes for interactive setup."
         );
         return;
     }
@@ -99,8 +97,6 @@ pub fn validate(args: &InitArgs) {
     };
 
     let cfg = to_project_config(&cfg, args, name);
-
-    println!("Creating project with config: {:?}", cfg);
 
     init::scaffold::scaffold(cfg);
 }

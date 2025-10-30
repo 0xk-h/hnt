@@ -1,5 +1,3 @@
-// use std::process::Command;
-use colored::*;
 use std::collections::{HashMap, HashSet};
 use std::env;
 use std::fs;
@@ -74,17 +72,7 @@ pub fn create(config: &ProjectConfig) -> std::io::Result<()> {
 
     let rename: HashMap<String, String> = HashMap::new();
 
-    print!("Using template: {}\n", src);
-    println!(
-        "replacements: {:?}\n skip: {:?}\n rename: {:?}",
-        replacements, skip, rename
-    );
-
-    println!("{}", "Creating project".bold().green());
-
     copy(&src, &path, &replacements, &skip, &rename)?;
-
-    println!("Project created successfully at {:?}", path);
 
     Ok(())
 }
