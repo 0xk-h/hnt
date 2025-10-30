@@ -4,8 +4,8 @@ use colored::*;
 use std::process::{Command, Stdio};
 
 pub async fn push(inputs: &[String], set_upstream: bool, ai: bool, dry_run: bool) {
-    if set_upstream && inputs.len() != 2 {
-        eprintln!("Error: -u requires exactly 2 arguments: <msg> <branch>");
+    if set_upstream && inputs.len() != 1 {
+        eprintln!("Error: -u requires a arguments: <branch>");
         return;
     }
 
