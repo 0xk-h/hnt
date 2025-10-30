@@ -56,10 +56,10 @@ async fn main() {
             full: bool,
         },
 
-        //scaffold new project
+        // Scaffold new project
         Init(init::validate::InitArgs),
 
-        //Config {}
+        // Config operations
         Config {
             option: Option<ConfigOptions>,
         },
