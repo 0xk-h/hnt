@@ -269,13 +269,13 @@ hnt
 
 A convenient install script is provided to download the latest precompiled binary from GitHub Releases:
 
-#### Linux/macOS: Run the bash script:
+#### Linux: Run the bash script:
 
 ```bash
 curl -sSL https://raw.githubusercontent.com/kishore399/hnt/main/install.sh | bash
 ```
 
-This detects your OS/architecture, downloads the appropriate `hnt` binary, and installs it to `/usr/local/bin` (or `/opt/homebrew/bin` on macOS with Homebrew). You may need to enter `sudo` credentials for the move step.
+This detects your OS/architecture, downloads the appropriate `hnt` binary, and installs it to `/usr/local/bin`. You may need to enter `sudo` credentials for the move step.
 
 #### Windows: Run the PowerShell script:
 
@@ -284,6 +284,26 @@ iwr https://raw.githubusercontent.com/kishore399/hnt/main/install.ps1 -UseBasicP
 ```
 
 This downloads `hnt.exe` and places it in `~/bin` (creating it if necessary) and updates your user PATH.
+
+#### MacOS
+
+For macOS users, it is recommended to build `HNT` from source manually:
+
+```
+git clone https://github.com/kishore399/hnt.git
+cd hnt
+cargo build --release
+```
+
+After a successful build, move the binary to your preferred executable directory:
+
+- If Homebrew is installed:
+  `sudo mv target/release/hnt /opt/homebrew/bin`
+
+- Otherwise:
+  `sudo mv target/release/hnt /usr/local/bin`
+
+This ensures the `hnt` command is available globally in your terminal.
 
 After installation, verify by running:
 
