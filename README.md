@@ -157,7 +157,6 @@ $ hnt init myapp -y
 
 ## Features
 
-- **Multi-threaded Startup:** Fast module loading using Rust’s asynchronous Tokio runtime, ensuring quick startup even with multiple tools.
 - **Interactive Terminal UI:** Visually appealing menus and prompts with arrow-key navigation, thanks to the Cliclack library, for a smooth CLI experience.
 - **Git Automation:** Automate common Git tasks, such as commit, push, setting upstream, and generating commit messages with AI assistance.
 - **AI Integration:** Query an AI assistant (using Google Gemini) directly from the terminal; supports full or concise output and easy API key management.
@@ -169,11 +168,12 @@ $ hnt init myapp -y
 
 ## Tech Stack
 
-- **Language:** Rust
-- **Async Runtime:** Tokio
-- **Terminal UI:** Cliclack (arrow keys, interactive menus)
-- **AI Integration:** Google gemini
-- **Version Control:** Git automation with AI-assisted messages
+- **Language:** Rust (for performance and safety).
+- **Async Runtime:** Tokio (for multi-threading and async I/O).
+- **CLI Parsing & UI:** Clap (command parsing) and Cliclack (interactive terminal interface, arrow-key menus).
+- **AI Integration:** Google Gemini API (via a Rust client; requires your API key).
+- **Games & Utilities:** Custom game logic and scaffolding generators in Rust.
+- **Templates:** Predefined project templates for React (JS/TS), Express (JS/TS), FastAPI (Python), Gin (Go), Axum (Rust), Vanilla JS/TS (with optional Tailwind), etc.
 
 ---
 
@@ -258,6 +258,47 @@ hnt
 
 ## Installation
 
+### Requirements
+
+- Rust (latest stable) and Cargo (for development).
+- Platform: Linux, macOS, or Windows 10+.
+
+---
+
+### Quick Install (Users)
+
+A convenient install script is provided to download the latest precompiled binary from GitHub Releases:
+
+#### Linux/macOS: Run the bash script:
+
+```bash
+curl -sSL https://raw.githubusercontent.com/kishore399/hnt/main/install.sh | bash
+```
+
+This detects your OS/architecture, downloads the appropriate `hnt` binary, and installs it to `/usr/local/bin` (or `/opt/homebrew/bin` on macOS with Homebrew). You may need to enter `sudo` credentials for the move step.
+
+#### Windows: Run the PowerShell script:
+
+```powershell
+iwr https://raw.githubusercontent.com/kishore399/hnt/main/install.ps1 -UseBasicParsing | iex
+```
+
+This downloads `hnt.exe` and places it in `~/bin` (creating it if necessary) and updates your user PATH.
+
+After installation, verify by running:
+
+```bash
+hnt --help
+```
+
+This should display the help message with available commands.
+
+---
+
+### From Source (Developers)
+
+For development or if you prefer building from source:
+
 Clone repository:
 
 ```bash
@@ -283,66 +324,169 @@ Run the binary:
 ./target/release/hnt
 ```
 
+The binary will be in `target/release/hnt`. You can move it to a directory in your PATH (e.g. `/usr/local/bin`).
+
 ---
 
 ## Usage
 
-### Games
+HNT provides several subcommands. Use `hnt --help` or `hnt <command> --help` to see detailed options. Below are common usage patterns:
 
-To play the interactive Guess game in terminal.
+### Interactive Guessing Game:
 
-```bash
+```
 hnt guess
 ```
 
-To directly play it without the interactive mode for 1 time
+Launch a number guessing game in the terminal. You will be prompted to guess a number between 1 and 10 until correct.
 
-```bash
+To play non-interactively (single guess):
+
+```
 hnt guess <number>
 ```
 
-### Git Automation
+Replace `<number>` with your guess (integer). The game will immediately tell you if it’s too high, too low, or correct.
 
-Automate commits, generate AI-assisted messages, filter commits, and handle upstream configuration.
+---
 
-```bash
-# Manual commit
-hnt push -m <Commit-msg> <branch>
+### AI Assistant (Google Gemini):
 
-# Ai generated commit msg (-A or --ai)
-hnt push -A or hnt push --ai <bramch>
-
-# Dry-run (-n or --dry-run)
-hnt push -An <branch>
-
-# Set upstream in git (-u or --set-upstream)
-hnt push -Au main
+```
+hnt ai "<your prompt>"
 ```
 
-Branch is optional if upstream is already set
+Send a prompt to the AI assistant. By default, it returns a concise answer. Options:
 
-### AI Prompts
+- `-f, --full` : Request the full AI response (long format).
+- `-k, --key <API_KEY>` : Set or update your Google Gemini API key.
 
-```bash
-hnt ai "Explain Rust async programming"
+Example:
 
-# -f or --full to see the entire ai response
-hnt ai "Explain Rust async programming" -f
-
-# -k or --key to update ai key
-hnt ai -k <gemini_api_key>
+```
+hnt ai "Explain Rust's ownership model in simple terms"
 ```
 
-Run prompts directly in the CLI; choose between full or short outputs.
+The AI response will be displayed in the terminal. To store your API key (persistently in the config file):
 
-### Project Scaffold
-
-```bash
-hnt scaffold fullstack
-hnt scaffold frontend
+```
+hnt ai -k YOUR_API_KEY_HERE
 ```
 
-Dynamically generate ready-to-run projects with backend/frontend wiring included.
+---
+
+### Git Automation (Commit & Push):
+
+```
+hnt push [options] <commit message> [<branch>]
+```
+
+Stages all changes, commits, and pushes to Git. Options:
+
+- `-A, --ai` : Have HNT generate a commit message using AI. You will be prompted to pick from AI-generated suggestions or enter a custom message.
+- `-u, --set-upstream` : Push and set the upstream branch on first push (uses `git push --set-upstream origin <branch>`).
+- `-n, --dry-run` : Show what would be done without actually committing or pushing.
+
+If `--ai` is not used, provide the commit message as a positional argument. Optionally specify the branch:
+
+```
+hnt push -m "Fix issue with API parsing"
+```
+
+```
+hnt push -u "Initial commit" main
+```
+
+With `-A`, e.g.:
+
+```
+hnt push -A
+```
+
+You will be guided through choosing an AI-generated commit message or writing your own.
+
+---
+
+### Project Scaffold (Init):
+
+```
+hnt init [options]
+```
+
+Scaffold a new project using templates. If run without options, an interactive wizard will prompt you for project name, type (frontend/backend/fullstack), frameworks (React, Express, FastAPI, etc.), and additional preferences (TypeScript, Tailwind CSS, etc.).
+
+Options to skip the wizard or provide answers directly:
+
+- `-y, --yes` : Answer "yes" to all prompts (uses defaults or values from config).
+- `-n, --no` (or `--quick`) : Skip prompts (uses defaults) without confirmation.
+- `--frontend <framework>` : Choose frontend framework (`react`, `react-ts`, `vanilla`, `vanilla-ts`).
+- `--backend <framework>` : Choose backend framework (`express`, `express-ts`, `fastapi`, `gin`, `axum`).
+- `--tailwind` : Include Tailwind CSS in frontend.
+- `--git` : Initialize a Git repository.
+- `--force` : Overwrite existing files in target directory.
+
+Examples:
+
+```
+hnt init
+```
+
+```
+hnt init -y
+```
+
+```
+hnt init myapp --frontend react --backend fastapi -y
+```
+
+The new project will be created in a subdirectory (or current directory if the name is `.`), with boilerplate code and any necessary setup (e.g. initializing a Git repo).
+
+---
+
+### Configuration Management
+
+HNT stores its configuration and state in `~/.hnt/config.toml`. This file is created on first run and contains settings like:
+
+- **API Keys:** `gemini_api_key` for AI features.
+- **Scaffold Defaults:** Default frontend/backend choices, Tailwind usage, and Git initialization.
+
+You can edit `~/.hnt/config.toml` manually or use commands
+
+#### Config Commands
+
+`hnt ai -k <gemini_api_key>`
+sets the api key to access ai features in hnt such as ai generated commit messages.
+
+`hnt config set`
+Opens an interactive wizard to update scaffold defaults (frontend, backend, Tailwind, Git).
+The changes are saved in `~/.hnt/config.toml`.
+
+`hnt config reset`
+Resets all configuration values to default.
+The old configuration is backed up at `~/.hnt/config.toml.bak`.
+
+Config structure:
+
+```
+[api]
+gemini_api_key = "<gemini_api_key>"
+
+[init_defaults]
+frontend = "<frontend_framework>"
+backend = "<backend_framework>"
+use_tailwind = <bool>
+git_init = <bool>
+```
+
+---
+
+### Version Info
+
+```
+hnt -V
+```
+
+Displays the current HNT version.
 
 ---
 
@@ -356,9 +500,22 @@ Dynamically generate ready-to-run projects with backend/frontend wiring included
 
 ---
 
+## Contributing
+
+Contributions are welcome! Please see `CONTRIBUTING.md` for guidelines on code style, submitting issues, and pull requests.
+
+---
+
+## License
+
+This project is open source under the MIT License. See `LICENSE` for details.
+
+---
+
 ## Contact & Credits
 
-Created by — Kishore Kumar J
+Created by **Kishore Kumar (@0xk-h)**.
+For any questions or feedback, feel free to open an issue on GitHub or connect on LinkedIn.
 
 GitHub: [https://github.com/0xk-h](https://github.com/0xk-h)
 
