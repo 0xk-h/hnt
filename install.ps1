@@ -51,6 +51,8 @@ if ($PATH_ENTRY -notlike "*$BIN_PATH*") {
 # Update PATH for current session immediately
 #-------------------------------------------------
 $Env:Path += ";$BIN_PATH"
+Set-Alias hnt "$BIN_PATH\hnt.exe"
+
 
 Write-Host "✅ Installation complete! Run 'hnt guess' to verify."
 Write-Host "Installed at: $BIN_PATH\hnt.exe"
