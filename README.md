@@ -279,9 +279,9 @@ This detects your OS/architecture, downloads the appropriate `hnt` binary, and i
 
 #### Windows: Run the PowerShell script:
 
-`cmd
+```cmd
 powershell -Command "iwr https://raw.githubusercontent.com/0xk-h/hnt/main/install.ps1 -UseBasicParsing | iex"
-`
+```
 
 This downloads `hnt.exe` and places it in `~/bin` (creating it if necessary) and updates your user PATH.
 
