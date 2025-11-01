@@ -272,16 +272,16 @@ A convenient install script is provided to download the latest precompiled binar
 #### Linux: Run the bash script:
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/kishore399/hnt/main/install.sh | bash
+curl -sSL https://raw.githubusercontent.com/0xk-h/hnt/main/install.sh | bash
 ```
 
 This detects your OS/architecture, downloads the appropriate `hnt` binary, and installs it to `/usr/local/bin`. You may need to enter `sudo` credentials for the move step.
 
 #### Windows: Run the PowerShell script:
 
-```powershell
-iwr https://raw.githubusercontent.com/kishore399/hnt/main/install.ps1 -UseBasicParsing | iex
-```
+`cmd
+powershell -Command "iwr https://raw.githubusercontent.com/0xk-h/hnt/main/install.ps1 -UseBasicParsing | iex"
+`
 
 This downloads `hnt.exe` and places it in `~/bin` (creating it if necessary) and updates your user PATH.
 
@@ -290,7 +290,7 @@ This downloads `hnt.exe` and places it in `~/bin` (creating it if necessary) and
 For macOS users, it is recommended to build `HNT` from source manually:
 
 ```
-git clone https://github.com/kishore399/hnt.git
+git clone https://github.com/0xk-h/hnt.git
 cd hnt
 cargo build --release
 ```
@@ -322,7 +322,7 @@ For development or if you prefer building from source:
 Clone repository:
 
 ```bash
-git clone https://github.com/yourusername/hnt.git
+git clone https://github.com/0xk-h/hnt.git
 cd hnt
 ```
 
