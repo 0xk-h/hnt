@@ -1,3 +1,5 @@
+use std::process::{Command, Stdio};
+
 use super::project_summary::print_next_steps;
 use super::prompts::ProjectConfig;
 use crate::generator;
@@ -35,5 +37,13 @@ pub fn scaffold(config: ProjectConfig) {
         }
     }
 
-    print_next_steps(&config.name);
+    print_next_steps(&config.name, &config);
+
+    if config.git_init {
+        Command::new("git")
+            .arg("init")
+            .stderr(Stdio::inherit())
+            .status()
+            .expect("Unexpected error occured while running git command");
+    }
 }
