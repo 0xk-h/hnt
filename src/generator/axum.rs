@@ -6,14 +6,8 @@ use std::path::PathBuf;
 use crate::init::fs_ops::copy;
 use crate::init::helper::get_name;
 use crate::init::prompts::ProjectConfig;
-use crate::utils::pkg_manager::detect_package_manager;
 
 pub fn create(config: &ProjectConfig) -> std::io::Result<()> {
-    if !(detect_package_manager("cargo")) {
-        eprintln!("cargo is not installed. Please install go to proceed.");
-        std::process::exit(1);
-    }
-
     if let Some(backend) = &config.backend {
         if backend != "axum" {
             eprintln!("Unsupported backend framework");

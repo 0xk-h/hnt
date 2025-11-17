@@ -6,16 +6,8 @@ use std::path::PathBuf;
 use crate::init::fs_ops::copy;
 use crate::init::helper::get_name;
 use crate::init::prompts::ProjectConfig;
-use crate::utils::pkg_manager::detect_package_manager;
 
 pub fn create(config: &ProjectConfig) -> std::io::Result<()> {
-    if (config.frontend == Some("vanilla-ts".to_string()) || config.use_tailwind)
-        && !(detect_package_manager("npm"))
-    {
-        eprintln!("npm is not installed. Please install Node.js and npm to proceed.");
-        std::process::exit(1);
-    }
-
     if let Some(frontend) = &config.frontend {
         if frontend != "vanilla" && frontend != "vanilla-ts" {
             eprintln!("Unsupported frontend framework");
