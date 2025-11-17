@@ -41,9 +41,13 @@ pub fn scaffold(config: ProjectConfig) {
 
     if config.git_init {
         Command::new("git")
-            .arg("init")
+            .args(["init", "--initial-branch=main"])
+            .current_dir(&config.name)
             .stderr(Stdio::inherit())
             .status()
-            .expect("Unexpected error occured while running git command");
+            .unwrap_or_else(|_| {
+                eprintln!("Error: could not run `git init`. Make sure Git is installed.");
+                std::process::exit(1);
+            });
     }
 }

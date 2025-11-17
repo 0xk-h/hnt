@@ -18,7 +18,7 @@ use crate::init::prompts::ProjectConfig;
 pub fn print_next_steps(name: &str, cfg: &ProjectConfig) {
     let root = if name == "." { "" } else { name };
 
-    println!("\nNext steps:");
+    println!("\nNext steps:\n");
 
     let frontend = cfg.frontend.as_deref();
     let backend = cfg.backend.as_deref();
@@ -67,6 +67,7 @@ pub fn print_next_steps(name: &str, cfg: &ProjectConfig) {
             if !finfo.1.is_empty() {
                 println!(" {}", finfo.1);
             }
+            println!();
 
             println!("# Backend (Terminal 2)");
             if root != "" {
