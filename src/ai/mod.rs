@@ -1,5 +1,6 @@
 pub mod call_ai;
 pub mod commit;
-mod gemini;
+pub mod gemini;
 pub mod handler;
-pub mod update_api_key;
+pub mod open_router;
+pub mod update_ai_config;

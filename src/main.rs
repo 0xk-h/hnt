@@ -46,12 +46,9 @@ async fn main() {
         },
         // AI commands
         Ai {
-            #[arg(short, long, group = "ai")]
-            key: Option<String>,
-
-            #[arg(group = "ai")]
+            #[command(subcommand)]
+            command: Option<AiConfigCommands>, // make it optional if prompt is used
             prompt: Option<String>,
-
             #[arg(long, requires = "prompt", default_value_t = false)]
             full: bool,
         },
@@ -65,12 +62,18 @@ async fn main() {
         },
     }
 
+    #[derive(Subcommand)]
+    enum AiConfigCommands {
+        Set,
+    }
+
     let cli = Cli::parse();
 
     match cli.command {
         Commands::Guess { number } => {
             games::guess_parser::parse_guess(number);
         }
+
         Commands::Push {
             input,
             set_upstream,
@@ -79,12 +82,24 @@ async fn main() {
         } => {
             git::push::push(&input, set_upstream, ai, dry_run).await;
         }
-        Commands::Ai { key, prompt, full } => {
-            ai::handler::handle_prompt(key, prompt, full).await;
-        }
+
+        Commands::Ai {
+            command,
+            prompt,
+            full,
+        } => match command {
+            Some(AiConfigCommands::Set) => {
+                ai::update_ai_config::update();
+            }
+            None => {
+                ai::handler::handle_prompt(prompt, full).await;
+            }
+        },
+
         Commands::Init(init_args) => {
             init::validate::validate(&init_args);
         }
+
         Commands::Config { option } => match option {
             Some(opt) => {
                 utils::config_ops::setup_default_config(opt);

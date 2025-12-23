@@ -1,10 +1,8 @@
 use crate::ai;
 use serde_json;
 
-pub async fn handle_prompt(key: Option<String>, prompt: Option<String>, full: bool) {
-    if let Some(new_key) = key {
-        ai::update_api_key::key(&new_key);
-    } else if let Some(p) = prompt {
+pub async fn handle_prompt(prompt: Option<String>, full: bool) {
+    if let Some(p) = prompt {
         let res = match ai::call_ai::ai(&p).await {
             Ok(json) => json,
             Err(err) => {

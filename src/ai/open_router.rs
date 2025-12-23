@@ -1,7 +1,7 @@
 use reqwest::Client;
 use serde_json::json;
 
-pub async fn call_gemini(
+pub async fn call_open_router(
     prompt: &str,
     api_key: &str,
 ) -> Result<serde_json::Value, Box<dyn std::error::Error>> {
@@ -10,16 +10,22 @@ pub async fn call_gemini(
     }
 
     let payload = json!({
-        "contents": [
-            { "parts": [{ "text": prompt }] }
+        "model": "qwen/qwen2.5-7b-instruct",
+        "messages": [
+            {
+                "role": "user",
+                "content": prompt
+            }
         ]
     });
 
     let client = Client::new();
     let response = client
-        .post("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-8b:generateContent")
+        .post("https://openrouter.ai/api/v1/chat/completions")
         .header("Content-Type", "application/json")
-        .header("X-goog-api-key", api_key)
+        .header("Authorization", format!("Bearer {}", api_key))
+        .header("HTTP-Referer", "http://localhost")
+        .header("X-Title", "commit-message")
         .json(&payload)
         .send()
         .await?;
