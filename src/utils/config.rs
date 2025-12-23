@@ -13,7 +13,10 @@ pub struct HntConfig {
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct ApiConfig {
+    pub default_ai: String,
     pub gemini_api_key: String,
+    pub openai_api_key: String,
+    pub anthropic_api_key: String,
 }
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -58,9 +61,14 @@ impl HntConfig {
     }
 
     // Update AI api key
-    pub fn update_ai_key(new_key: &str) {
+    pub fn update_ai_key(ai: &str, new_key: &str) {
         let mut cfg = Self::load();
-        cfg.api.gemini_api_key = new_key.to_string();
+        match ai {
+            "gemini" => cfg.api.gemini_api_key = new_key.to_string(),
+            "openai" => cfg.api.openai_api_key = new_key.to_string(),
+            "anthropic" => cfg.api.anthropic_api_key = new_key.to_string(),
+            _ => panic!("Invalid AI type"),
+        }
         cfg.save();
     }
 
@@ -74,7 +82,10 @@ impl HntConfig {
     pub fn default_config() -> Self {
         HntConfig {
             api: ApiConfig {
+                default_ai: String::from("gemini"),
                 gemini_api_key: String::from(""),
+                openai_api_key: String::from(""),
+                anthropic_api_key: String::from(""),
             },
             init_defaults: InitDefaults {
                 frontend: None,
