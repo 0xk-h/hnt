@@ -17,7 +17,7 @@ pub async fn call_gemini(
 
     let client = Client::new();
     let response = client
-        .post("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-8b:generateContent")
+        .post("https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent")
         .header("Content-Type", "application/json")
         .header("X-goog-api-key", api_key)
         .json(&payload)

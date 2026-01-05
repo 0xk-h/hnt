@@ -10,7 +10,7 @@ pub async fn call_open_router(
     }
 
     let payload = json!({
-        "model": "qwen/qwen2.5-7b-instruct",
+        "model": "qwen/qwen2.5-coder-7b-instruct",
         "messages": [
             {
                 "role": "user",
@@ -31,5 +31,6 @@ pub async fn call_open_router(
         .await?;
 
     let result: serde_json::Value = response.json().await?;
+    println!("OpenRouter response: {:?}", result);
     Ok(result)
 }
